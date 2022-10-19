@@ -1,39 +1,33 @@
 import React from "react";
-import './CustomerCart.css'
+import './CustomerCart.css';
 import ItemBase from "../ItemBase/ItemBase";
-import { IMAGES } from "../../assets/ProductImages";
-
-const INIT_DATA = [
-  {img: IMAGES.product1, alt: 'code snippet', category: 'FORMS', title: 'InputBase', description: 'The only component you will need for all your basic form needs!', id: '0', price: 24.99, quantity: 0, productTotal: 0},
-  {img: IMAGES.product2, alt: 'code snippet', category: 'UI CONTROL', title: 'Theme Toggle', description: 'Keep the UI synced with user theme with this unique component!', id: '1', price: 27.49, quantity: 0, productTotal: 0},
-  {img: IMAGES.product3, alt: 'code snippet', category: 'DATASETS', title: 'Data Manager', description: 'Handle user input data and keep everything organized!', id: '2', price: 32.97, quantity: 0, productTotal: 0},
-  {img: IMAGES.product4, alt: 'code snippet', category: 'FORMS', title: 'Submit Handler', description: 'Prevent default form submissions and handle data your way!', id: '3', price: 19.98, quantity: 0, productTotal: 0},
-];
-
-const CODES = ['JSX15', 'RJS15', '15OFF', 'SAV15', 'CCS15']
+import { CODES } from "../constants";
 
 class CustomerCart extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    this.handleState();
     this.state = {
-      itemData: INIT_DATA,
-      quantity: 0,
-      productTotal: 0,
-      subtotal: 0,
+    userData: {
+        itemData: props.itemData,
+        priceData: props.priceData,
+      },
       pcode: '',
       usedCode: false,
-      discount: 0,
-      total: 0,
     }
-  }
+  };
+
+  handleState = (name, value) => {
+    this.props.handleState(name, value);
+  };
 
   calcProductTotal = (e) => {
-    const { itemData, subtotal, discount } = this.state;
+    const { itemData, priceData } = this.state.userData;
     let num = e.target.value;
     let id = e.target.id;
     let price = itemData[id].price;
     let newProductTotal = (num * price);
-    let newTotal = (subtotal - discount).toFixed(2);
+    let newTotal = (priceData.subtotal - priceData.discount).toFixed(2);
     let newSubtotal = 0;
     let x = 0;
 
@@ -46,44 +40,61 @@ class CustomerCart extends React.Component {
     }
     
     this.setState(prev => ({
-      subtotal: newSubtotal.toFixed(2),
-      total: newTotal,
-      itemData: prev.itemData.map(obj => (
-        obj.id === id ? Object.assign(obj, { quantity: num, productTotal: newProductTotal }) : obj
-      ))
-    }))
+      userData: {
+        ...prev.userData,
+        priceData: {
+          ...prev.userData.priceData,
+          subtotal: newSubtotal.toFixed(2),
+          total: newTotal,
+        },
+        itemData: prev.userData.itemData.map(obj => (
+          obj.id === id ? Object.assign(obj, { quantity: num, productTotal: newProductTotal }) : obj
+        ))
+      }
+    }), this.handleState('userData', this.state.userData))
   };
 
   handleChange = ({target: { value } }) => {
     this.setState({ pcode: value})
-  }
+  };
 
   handlePromo = () => {
-    const { subtotal, pcode } = this.state;
+    const { userData, pcode } = this.state;
     if (CODES.includes(pcode)) {
-      const newTotal = subtotal - 15;
+      const newTotal = userData.priceData.subtotal - 15;
 
-      this.setState({
-        discount: '15.00',
-        total: newTotal.toFixed(2),
+      this.setState(prev => ({
+        userData: {
+          ...prev.userData,
+          priceData: {
+            ...prev.userData.priceData,
+            discount: '15.00',
+            total: newTotal.toFixed(2),
+          },
+        },
         usedCode: true,
-      })
+      }))
     } else if(pcode === '') {
       alert('You must enter a code to continue!')
     } else {
       this.setState({ pcode: ''});
       return alert(`${pcode} is not a valid code!`);
     }
-  }
+  };
+
+  handleProceed = () => {
+    if (this.state.userData.priceData.total > 0) {
+      this.handleState('userCheckout', true);
+    } else {
+      alert('You must make a selection to proceed!');
+    }
+  };
 
   render() {
     const {
-      itemData,
-      subtotal,
-      discount,
-      total,
+      userData,
       usedCode,
-      pcode
+      pcode,
     } = this.state;
 
     return (
@@ -96,7 +107,8 @@ class CustomerCart extends React.Component {
             <h5>Total</h5>
           </div>
           <hr />
-          {itemData.length ? itemData.map((item) => (
+          {userData.itemData.length ? userData.itemData.map((item) => (
+            // file deepcode ignore ReactMissingArrayKeys: <n/a>
             <ItemBase 
             onChange={this.calcProductTotal}
             total={this.calcTotal}
@@ -124,7 +136,7 @@ class CustomerCart extends React.Component {
             <div className="total-wrap">
               <div className="subtotal pair-wrap">
                 <p>Cart Subtotal: </p>
-                <p className="b-total">${subtotal}</p>
+                <p className="b-total">${userData.priceData.subtotal}</p>
               </div>
               <div className="sH pair-wrap">
                 <p>Shipping and Handling: </p>
@@ -132,21 +144,21 @@ class CustomerCart extends React.Component {
               </div>
               <div className="discount pair-wrap">
                 <p>Savings: </p>
-                <p className="b-total">${discount}</p>
+                <p className="b-total">${userData.priceData.discount}</p>
               </div>
               <div className="cart-total pair-wrap">
                 <p className="total">Cart Total: </p>
-                <p className="p-total b-total">${total}</p>
+                <p className="p-total b-total">${userData.priceData.total}</p>
               </div>
             </div>
             <hr />
             <div className="proceed-shipping">
-              <button className="btn-primary">Proceed to Shipping</button>
+              <button onClick={this.handleProceed} className="btn-primary">Proceed to Shipping</button>
             </div>
         </div>
       </div>
     )
   }
-}
+};
 
 export default CustomerCart;

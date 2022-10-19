@@ -1,58 +1,25 @@
 import React from 'react';
 import './SignIn.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFacebook } from '@fortawesome/free-brands-svg-icons';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import InputBase from '../InputBase/InputBase';
 import { emailValidation, onlyTextValidation, passwordValidation, zipCodeValidation } from '../validations';
-
-const icon = <FontAwesomeIcon icon={faFacebook} className="fb-icon"/>;
-const hidden = <FontAwesomeIcon icon={faEye} className="pass-icon" id="pass-icon"/>;
-const visible = <FontAwesomeIcon icon={faEyeSlash} className="pass-icon" id="pass-icon"/>;
-
-const INIT_FORM = {
-  email: '',
-  pass: '',
-  passConfirm: '',
-  firstName: '',
-  lastName: '',
-  zipCode: '',
-}
-
-const INIT_PASS = {
-  passVisible: false,
-  passIcon: hidden,
-  passType: 'password',
-}
-
-const INIT_CREATE = [
-  {header: 'Your E-Mail Address *', label: '', name: 'email', type: 'text', error: 'emailError'},
-  {header: 'Create Password *', label: '', name: 'pass', type: 'password', error: 'passError', id: 'password', isPass: true},
-  {header: 'Confirm Password *', label: '', name: 'passConfirm', type: 'password', error: 'passConfirmError', id: 'password', isPass: true},
-  {header: 'First Name *', label: '', name: 'firstName', type: 'text', error: 'firstNameError'},
-  {header: 'Last Name *', label: '', name: 'lastName', type: 'text', error: 'lastNameError'},
-  {header: 'Zip Code', label: '', name: 'zipCode', type: 'text', error: 'zipCodeError'},
-];
-
-const INIT_SIGN = [
-  {header: 'Enter E-Mail *', label: '', name: 'email', type: 'text', error: 'emailError'},
-  {header: 'Enter Password *', label: '', name: 'pass', type: 'password', error: 'passError', id: 'password', isPass: true},
-];
-
-
+import { INIT_PASS, INIT_CREATE, INIT_SIGN, visible, icon } from '../constants';
 
 class SignIn extends React.Component {
-  constructor() {
-    super();
-
+  constructor(props) {
+    super(props);
+    this.handleState();
     this.state = {
-      formData: INIT_FORM,
+      formData: props.formData,
       error: {},
       button: 'Create Account',
       inputData: INIT_CREATE,
       passData: INIT_PASS,
     }
   }
+
+  handleState = (name, value) => {
+    this.props.handleState(name, value);
+  };
 
   passVisibility = () => {
     if(!this.state.passData.passVisible) {
@@ -62,18 +29,21 @@ class SignIn extends React.Component {
           passIcon: visible,
           passType: 'text',
         }
-      })
+      });
     } else if (this.state.passData.passVisible) {
       this.setState({
         passData: INIT_PASS,
-      })
+      });
     }
-  }
+  };
 
   handleSignUI = () => {
       this.setState({
         inputData: INIT_SIGN,
-        formData: INIT_FORM,
+        formData: {
+          email: '',
+          pass: '',
+        },
         error: {},
         button: 'Sign In',
       });
@@ -82,11 +52,11 @@ class SignIn extends React.Component {
   handleCreateUI = () => {
     this.setState({
       inputData: INIT_CREATE,
-      formData: INIT_FORM,
+      formData: this.props.formData,
       error: {},
       button: 'Create Account',
     });
-  }
+  };
 
   handleInputData = ({ target: {name, value}}) => {
     this.setState((prevState) => ({
@@ -95,7 +65,7 @@ class SignIn extends React.Component {
         [name]: value,
       }
     }));
-  }
+  };
 
   handleValidations = (type, value) => {
     const { pass, passConfirm } = this.state.formData;
@@ -167,7 +137,7 @@ class SignIn extends React.Component {
       default:
         break;
     }
-  }
+  };
 
   handleBlur = ({ target: {name, value}}) => this.handleValidations(name, value);
 
@@ -186,18 +156,55 @@ class SignIn extends React.Component {
     });
     this.setState({ error: errorValue });
     return isError;
-  }
+  };
 
   handleCreateUser = (e) => {
+    const { formData } = this.state;
     e.preventDefault();
 
     const errorCheck = this.checkErrorBeforeSave();
     if (!errorCheck) {
+      this.handleState('users', formData);
+      this.handleState('currentUser', formData.email);
+      // file deepcode ignore ReactNextState: <required for project>
       this.setState({
-        cardData: INIT_FORM,
-      });
+        formData: this.props.formData,
+      }, this.handleState('userSignedIn', true));
     }
-  }
+  };
+
+  handleSignIn = (e) => {
+    const { formData } = this.state;
+    const { users } = this.props;
+    e.preventDefault();
+    const errorCheck = this.checkErrorBeforeSave();
+    if (!errorCheck) {
+      let y = 0;
+      users.forEach(user => {
+        if( user.email === formData.email && user.pass === formData.pass) {
+          this.handleState('currentUser', user.email);
+          this.handleState('userSignedIn', true);
+        } else if (user.email === formData.email && user.pass !== formData.pass) {
+          this.setState((prevState) => ({
+            error: {
+              ...prevState.error,
+              passError: 'Incorrect password, please try again.',
+            }
+          }));
+        } else if(user.email !== formData.email) {
+          y+=1;
+        }
+      });
+      if (y === users.length) {
+        this.setState((prevState) => ({
+          error: {
+            ...prevState.error,
+            emailError: 'Email not found. Try again or Create an Account.',
+          }
+        }));
+      }
+    }
+  };
 
   render() {
     const {
@@ -207,8 +214,6 @@ class SignIn extends React.Component {
       button,
       passData,
     } = this.state;
-
-    
 
     return (
       <div className='sign-wrap'>
@@ -222,9 +227,9 @@ class SignIn extends React.Component {
             CREATE ACCOUNT
           </label>
         </div>
-
-        <form onSubmit={this.handleCreateUser}>
+        <form onSubmit={button === 'Create Account' ? this.handleCreateUser : this.handleSignIn}>
         {inputData.length ? inputData.map((item) => (
+            // file deepcode ignore ReactMissingArrayKeys: <n/a>
             <InputBase
             header={item.header}
             placeHolder={item.label}
@@ -259,11 +264,10 @@ class SignIn extends React.Component {
               <span>{icon}</span>
             </div>
           </div>
-        </form>
-          
+        </form>  
       </div>
     )
   }
-}
+};
 
 export default SignIn;

@@ -10,17 +10,41 @@ export const onlyTextValidation = (value) => {
   }
 };
 
-export const zipCodeValidation = (value) => {
+export const streetAddressValidation = (value) => {
   if (value) {
-    if (/^[0-9]*$/i.test(value)) {
+    if (/^[#.0-9a-zA-Z\s,-]+$/i.test(value)) {
       return undefined;
     } else {
-      return 'Numeric characters only';
+      return 'No special characters allowed';
     }
   } else {
     return undefined;
   }
 };
+
+export const zipCodeValidation = (value) => {
+  if (value) {
+    if (/^\d{5}([ \-]\d{4})?$/i.test(value)) {
+      return undefined;
+    } else {
+      return 'Numeric characters only. **12345(-1234)**';
+    }
+  } else {
+    return undefined;
+  }
+};
+
+export const cellPhoneValidation = (value) =>{
+  if (value) {
+    if (/^(\\d{3}[- ]?){2}\\d{4}$/i.test(value)) {
+      return undefined;
+    } else {
+      return 'Numeric characters and "-" only';
+    }
+  } else {
+    return undefined;
+  }
+}
 
 export const emailValidation = (value) => {
   if (value) {
