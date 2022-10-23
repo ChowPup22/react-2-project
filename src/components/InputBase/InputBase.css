@@ -5,7 +5,7 @@ label {
 }
 
 .input-root {
-  border: 1px solid rgb(162, 159, 159);
+  border: 2px solid rgb(162, 159, 159);
   border-radius: 5px;
   padding: 10px;
   line-height: 1.2;
@@ -16,8 +16,7 @@ label {
   font-size: 16px;
   margin: 8px 0;
   text-align: left;
-
-}
+  color: rgb(43, 42, 42);}
 
 .error {
   color: red;
@@ -25,4 +24,23 @@ label {
   position: absolute;
   top: 5px;
   right: 5px;
+}
+
+input[type='submit'].main {
+  background: #E43C2A;
+  border: 1px solid #E43C2A;
+  font-size: 30px;
+  padding: 10px;
+  color: white;
+  font-weight: bold;
+  width: 98%;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+input[type='submit'].fb.main {
+  background-color: #183254;
+  border: 1px solid #183254;
+  font-size: 25px;
+  padding: 15px;
 }

@@ -16,3 +16,10 @@
   margin-left: 40px;
   justify-content: space-around;
 }
+
+.cart-wrap {
+  max-width: 600px;
+  box-shadow: 3px 8px 14px rgba(33, 33, 33, 0.6);
+  overflow: hidden;
+  padding: 20px 18px;
+}

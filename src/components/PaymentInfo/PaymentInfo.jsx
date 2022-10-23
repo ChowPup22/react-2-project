@@ -1,0 +1,202 @@
+import React from "react";
+import CartSummary from "../CartSummary/CartSummary";
+import { INIT_CARD_INPUT, OTHERCARDS } from "../constants";
+import InputBase from "../InputBase/InputBase";
+import { cardExpireValidation, cardNumberValidation, onlyTextValidation, securityCodeValidation } from "../validations";
+import './PaymentInfo.css';
+
+class PaymentInfo extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      userData: this.props.userData,
+      error: {},
+      maxLength: OTHERCARDS.length,
+      cardType: null,
+
+    }
+  }
+
+
+  handleState = (name, value) => {
+    this.props.handleState(name, value);
+  };
+
+  findCardType = (cardNumber) => {
+    const regexPattern = {
+      MASTERCARD: /^5[1-5][0-9]{1,}|^2[2-7][0-9]{1,}$/,
+      VISA: /^4[0-9]{2,}$/,
+      AMERICAN_EXPRESS: /^3[47][0-9]{5,}$/,
+      DISCOVER: /^6(?:011|5[0-9]{2})[0-9]{3,}$/,
+    };
+
+    for (const card in regexPattern) {
+      if (cardNumber.replace(/[^\d]/g, '').match(regexPattern[card])) return card;
+    }
+    return '';
+  }
+
+  handleValidations = (type, value) => {
+    let errorText;
+    switch(type) {
+      case 'card':
+        errorText = cardNumberValidation(value);
+        this.setState((prevState) => ({
+          cardType: this.findCardType(value),
+          error: {
+            ...prevState.error,
+            cardError: errorText,
+          }
+        }));
+        break;
+      case 'cardHolder':
+        errorText = onlyTextValidation(value);
+        this.setState((prevState) => ({
+          error: {
+            ...prevState.error,
+            cardHolderError: errorText,
+          }
+        }));
+        break;
+      case 'expiry':
+        errorText = cardExpireValidation(value);
+        this.setState((prevState) => ({
+          error: {
+            ...prevState.error,
+            expiryError: errorText,
+          }
+        }));
+        break;
+      case 'securityCode':
+        errorText = securityCodeValidation(3, value);
+        this.setState((prevState) => ({
+          error: {
+            ...prevState.error,
+            securityCodeError: errorText,
+          }
+        }));
+        break;
+      default:
+        break;
+    }
+  }
+
+  handleBlur = ({ target: {name, value}}) => this.handleValidations(name, value);
+
+  handleInputData = ({ target: {name, value}}) => {
+
+    if (name === 'card') {
+      let mask = value.split(' ').join('');
+      if(mask.length) {
+        mask = mask.match(new RegExp('.{1,4}', 'g')).join(' ');
+
+        this.setState((prev) => ({
+          userData: {
+            ...prev.userData,
+            paymentData: {
+              ...prev.userData.paymentData,
+              [name]: mask,
+            },
+          }
+        }));
+      } else {
+        this.setState((prev) => ({
+          userData: {
+            ...prev.userData,
+            paymentData: {
+              ...prev.userData.paymentData,
+              [name]: '',
+            }
+          }
+        }));
+      }
+    } else {
+      this.setState((prev) => ({
+        userData: {
+          ...prev.userData,
+          paymentData: {
+            ...prev.userData.paymentData,
+            [name]: value,
+          }
+        }
+      }));
+    }
+  };
+
+  checkErrorBeforeSave = () => {
+    const { userData, error } = this.state;
+    let errorValue = {};
+    let isError = false;
+    Object.keys(userData.paymentData).forEach((val) => {
+      if (!userData.paymentData[val].length) {
+        errorValue = {...errorValue, [`${val}Error`] : 'Required'};
+        isError = true;
+      } else if (error[`${val}Error`]) {
+        errorValue = {...errorValue, [`${val}Error`] : error[`${val}Error`]};
+        isError = true;
+      }
+    });
+    this.setState({ error: errorValue });
+    return isError;
+  }
+
+  handleProceed = (e) => {
+    e.preventDefault();
+    const { userData } = this.state;
+
+    const errorCheck = this.checkErrorBeforeSave();
+    if (!errorCheck) {
+      this.handleState('userData', userData)
+      this.handleState('userPayment', true)
+    }
+  }
+
+  render() {
+
+    const {
+      userData,
+      error,
+      cardType,
+      maxLength
+    } = this.state;
+
+
+    return (
+      <div className="payment-page-wrap">
+        <div className="payment-wrap">
+          <form >
+            {INIT_CARD_INPUT.length ? INIT_CARD_INPUT.map((item) => (
+              <InputBase
+              header={item.header}
+              placeholder={item.label}
+              type={item.type}
+              value={userData.paymentData && userData.paymentData[item.name]}
+              onChange={this.handleInputData}
+              autoComplete= 'off'
+              maxLength={maxLength}
+              name={item.name}
+              onBlur={this.handleBlur}
+              cardType={cardType}
+              isCard={item.name === 'card'}
+              errorM={
+                (error
+                && error[item.error]
+                && error[item.error].length > 1)
+                ? error[item.error]
+                : null
+              }
+            />
+            )) : null}
+          </form>
+        </div>
+        <CartSummary
+        handleProceed={this.handleProceed}
+        isPayment={true}
+        userData={userData}
+        />
+      </div>
+    )
+  }
+}
+
+export default PaymentInfo;

@@ -8,11 +8,12 @@ class SignIn extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      formData: props.formData,
+      userData: props.userData,
       error: {},
       button: 'Create Account',
       inputData: INIT_CREATE,
       passData: INIT_PASS,
+      users: props.users,
     }
   }
 
@@ -37,21 +38,24 @@ class SignIn extends React.Component {
   };
 
   handleSignUI = () => {
-      this.setState({
+      this.setState(prev => ({
         inputData: INIT_SIGN,
-        formData: {
-          email: '',
-          pass: '',
+        userData: {
+          ...prev.userData,
+          formData: {
+            email: '',
+            pass: '',
+          }
         },
         error: {},
         button: 'Sign In',
-      });
+      }));
   };
 
   handleCreateUI = () => {
     this.setState({
       inputData: INIT_CREATE,
-      formData: this.props.formData,
+      userData: this.props.userData,
       error: {},
       button: 'Create Account',
     });
@@ -59,15 +63,18 @@ class SignIn extends React.Component {
 
   handleInputData = ({ target: {name, value}}) => {
     this.setState((prevState) => ({
-      formData: {
-        ...prevState.formData,
-        [name]: value,
+      userData: {
+        ...prevState.userData,
+        formData: {
+          ...prevState.userData.formData,
+          [name]: value,
+        }
       }
     }));
   };
 
   handleValidations = (type, value) => {
-    const { pass, passConfirm } = this.state.formData;
+    const { pass, passConfirm } = this.state.userData.formData;
     let errorText;
     switch(type) {
       case 'email':
@@ -141,11 +148,11 @@ class SignIn extends React.Component {
   handleBlur = ({ target: {name, value}}) => this.handleValidations(name, value);
 
   checkErrorBeforeSave = () => {
-    const { formData, error } = this.state;
+    const { userData, error } = this.state;
     let errorValue = {};
     let isError = false;
-    Object.keys(formData).forEach((val) => {
-      if (!formData[val].length) {
+    Object.keys(userData.formData).forEach((val) => {
+      if (!userData.formData[val].length) {
         errorValue = {...errorValue, [`${val}Error`] : 'Required'};
         isError = true;
       } else if (error[`${val}Error`]) {
@@ -158,22 +165,28 @@ class SignIn extends React.Component {
   };
 
   handleCreateUser = (e) => {
-    const { formData } = this.state;
+    const { formData } = this.state.userData;
     e.preventDefault();
 
     const errorCheck = this.checkErrorBeforeSave();
     if (!errorCheck) {
-      this.handleState('users', formData);
+      this.setState(prev => ({
+        users: {
+          ...prev.users,
+          formData,
+        }
+      }), this.handleState('users', this.state.users))
+     
       this.handleState('currentUser', formData.email);
       // file deepcode ignore ReactNextState: <required for project>
       this.setState({
-        formData: this.props.formData,
+        userData: this.props.userData,
       }, this.handleState('userSignedIn', true));
     }
   };
 
   handleSignIn = (e) => {
-    const { formData } = this.state;
+    const { formData } = this.state.userData;
     const { users } = this.props;
     e.preventDefault();
     const errorCheck = this.checkErrorBeforeSave();
@@ -207,7 +220,7 @@ class SignIn extends React.Component {
 
   render() {
     const {
-      formData,
+      userData,
       error,
       inputData,
       button,
@@ -231,9 +244,9 @@ class SignIn extends React.Component {
             // file deepcode ignore ReactMissingArrayKeys: <n/a>
             <InputBase
             header={item.header}
-            placeHolder={item.label}
+            placeholder={item.label}
             type={item.isPass ? passData.passType : item.type}
-            value={formData && formData[item.name]}
+            value={userData.formData && userData.formData[item.name]}
             onChange={this.handleInputData}
             autoComplete= 'off'
             name={item.name}

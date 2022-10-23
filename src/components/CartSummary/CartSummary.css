@@ -1,15 +1,8 @@
-.cart-wrap {
-  max-width: 600px;
-  box-shadow: 3px 8px 14px rgba(33, 33, 33, 0.6);
-  overflow: hidden;
-  padding: 20px 18px;
-}
-
 .checkout-wrap {
   position: relative;
   background-color: white;
   color: black;
-  max-width: 350px;
+  width: 200px;
   box-shadow: 3px 8px 14px rgba(33, 33, 33, 0.6);
   padding: 0 8px;
   margin-left: 30px;

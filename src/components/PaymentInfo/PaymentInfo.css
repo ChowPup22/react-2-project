@@ -1,0 +1,15 @@
+.payment-page-wrap {
+  background-color: white;
+  padding: 28px 24px;
+  margin: 18px auto;
+  display: inline-flex;
+  justify-content: space-between;
+  cursor: default;
+}
+
+.payment-wrap {
+  max-width: 600px;
+  box-shadow: 3px 8px 14px rgba(33, 33, 33, 0.6);
+  overflow: hidden;
+  padding: 20px 18px;
+}

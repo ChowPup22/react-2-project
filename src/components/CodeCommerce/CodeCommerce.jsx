@@ -2,7 +2,9 @@ import React from 'react';
 import SignIn from '../SignIn/SignIn';
 import CustomerCart from '../CustomerCart/CustomerCart';
 import ShippingInfo from '../ShippingInfo/ShippingInfo';
-import { INIT_FORM, INIT_DATA, INIT_PRICE_DATA, INIT_SHIPPING_DATA, TEST_USER } from '../constants';
+import { INIT_FORM, INIT_DATA, INIT_PRICE_DATA, INIT_SHIPPING_DATA, TEST_USER, INIT_CARD } from '../constants';
+import PaymentInfo from '../PaymentInfo/PaymentInfo';
+import Confirmation from '../Confirmation/Confirmation';
 
 class CodeCommerce extends React.Component {
   constructor() {
@@ -20,7 +22,10 @@ class CodeCommerce extends React.Component {
         itemData: INIT_DATA,
         priceData: INIT_PRICE_DATA,
         shippingData: INIT_SHIPPING_DATA,
-      }
+        paymentData: INIT_CARD,
+      },
+      itemSummary: [],
+      shippingSummary: {},
     }
   };
 
@@ -40,13 +45,17 @@ class CodeCommerce extends React.Component {
       userConfirmedPay,
       userData,
       users,
-      currentUser
+      itemSummary,
+      shippingSummary,
+      currentUser,
     } = this.state;
     return(
       <div>
-        {userSignedIn ? <SignIn handleState={this.handleStateData} users={users} formData={userData.formData}/> : null}
-        {!userSignedIn && !userCheckout ? <CustomerCart handleState={this.handleStateData} itemData={userData.itemData} priceData={userData.priceData}/> : null}
-        {userCheckout && !userShipping ? <ShippingInfo handleState={this.handleStateData} priceData={userData.priceData} shippingData={userData.shippingData}/> : null}
+        {userSignedIn ? <SignIn handleState={this.handleStateData} users={users} userData={userData}/> : null}
+        {!userSignedIn && !userCheckout ? <CustomerCart handleState={this.handleStateData} userData={userData} /> : null}
+        {userCheckout && !userShipping ? <ShippingInfo handleState={this.handleStateData} userData={userData} itemSummary={itemSummary} /> : null}
+        {userShipping && !userPayment ? <PaymentInfo handleState={this.handleStateData} userData={userData} itemSummary={itemSummary} /> : null}
+        {userPayment && userConfirmedPay ? <Confirmation userData={userData} itemSummary={itemSummary} shippingSummary={shippingSummary} /> : null}
       </div>
     )
   }

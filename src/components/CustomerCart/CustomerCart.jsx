@@ -2,19 +2,16 @@ import React from "react";
 import './CustomerCart.css';
 import ItemBase from "../ItemBase/ItemBase";
 import { CODES } from "../constants";
-import { INIT_DATA, INIT_PRICE_DATA } from "../constants";
-import CartSummary from "../../CartSummary/CartSummary";
+import CartSummary from "../CartSummary/CartSummary";
 
 class CustomerCart extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-    userData: {
-        itemData: INIT_DATA,
-        priceData: INIT_PRICE_DATA,
-      },
+    userData: this.props.userData,
       pcode: '',
       usedCode: false,
+      itemSummary: [],
     }
   };
 
@@ -83,8 +80,31 @@ class CustomerCart extends React.Component {
     }
   };
 
+  handleItemSummary = (dataset) => {
+    let x = 0;
+    for(; x < dataset.length; x++) {
+      if (dataset[x].quantity > 0) {
+        console.log('here');
+        let newItem = {
+          img: dataset[x].img,
+          alt: dataset[x].alt,
+          title: dataset[x].title,
+          productTotal: dataset[x].productTotal,
+        }
+        console.log(newItem);
+        this.setState(prev => ({
+          itemSummary: [
+            ...prev.itemSummary,
+            newItem,
+          ]
+        }), this.handleState('itemSummary', this.state.itemSummary))
+      }
+    }
+  }
+
   handleProceed = () => {
     if (this.state.userData.priceData.total > 0) {
+      this.handleItemSummary(this.state.userData.itemData)
       this.handleState('userData', this.state.userData)
       this.handleState('userCheckout', true);
     } else {
