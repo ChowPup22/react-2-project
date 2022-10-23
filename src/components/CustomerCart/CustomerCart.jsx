@@ -2,15 +2,16 @@ import React from "react";
 import './CustomerCart.css';
 import ItemBase from "../ItemBase/ItemBase";
 import { CODES } from "../constants";
+import { INIT_DATA, INIT_PRICE_DATA } from "../constants";
+import CartSummary from "../../CartSummary/CartSummary";
 
 class CustomerCart extends React.Component {
   constructor(props) {
     super(props);
-    this.handleState();
     this.state = {
     userData: {
-        itemData: props.itemData,
-        priceData: props.priceData,
+        itemData: INIT_DATA,
+        priceData: INIT_PRICE_DATA,
       },
       pcode: '',
       usedCode: false,
@@ -22,17 +23,17 @@ class CustomerCart extends React.Component {
   };
 
   calcProductTotal = (e) => {
+    e.preventDefault();
     const { itemData, priceData } = this.state.userData;
     let num = e.target.value;
     let id = e.target.id;
     let price = itemData[id].price;
     let newProductTotal = (num * price);
-    let newTotal = (priceData.subtotal - priceData.discount).toFixed(2);
     let newSubtotal = 0;
     let x = 0;
-
+    
     for(; x < itemData.length; x++) {
-      if (id === itemData.id) {
+      if (id === itemData[x].id) {
         newSubtotal = newSubtotal + newProductTotal;
       } else {
         newSubtotal = newSubtotal + itemData[x].productTotal
@@ -45,13 +46,13 @@ class CustomerCart extends React.Component {
         priceData: {
           ...prev.userData.priceData,
           subtotal: newSubtotal.toFixed(2),
-          total: newTotal,
+          total: (newSubtotal - priceData.discount).toFixed(2),
         },
         itemData: prev.userData.itemData.map(obj => (
           obj.id === id ? Object.assign(obj, { quantity: num, productTotal: newProductTotal }) : obj
         ))
       }
-    }), this.handleState('userData', this.state.userData))
+    }))
   };
 
   handleChange = ({target: { value } }) => {
@@ -84,6 +85,7 @@ class CustomerCart extends React.Component {
 
   handleProceed = () => {
     if (this.state.userData.priceData.total > 0) {
+      this.handleState('userData', this.state.userData)
       this.handleState('userCheckout', true);
     } else {
       alert('You must make a selection to proceed!');
@@ -123,39 +125,15 @@ class CustomerCart extends React.Component {
             />
           )) : null}
         </div>
-        <div className="checkout-wrap">
-            <h5>SUMMARY</h5>
-            <br />
-            <hr />
-            <div className="promo-wrap">
-              <p>Do you have a Promo code?</p>
-              <input type="text" placeholder="CODE" value={pcode} className="promo-input" disabled={usedCode} onChange={this.handleChange}/>
-              <button className="promo-input" onClick={this.handlePromo}>APPLY</button>
-            </div>
-            <hr />
-            <div className="total-wrap">
-              <div className="subtotal pair-wrap">
-                <p>Cart Subtotal: </p>
-                <p className="b-total">${userData.priceData.subtotal}</p>
-              </div>
-              <div className="sH pair-wrap">
-                <p>Shipping and Handling: </p>
-                <p className="b-total">-</p>
-              </div>
-              <div className="discount pair-wrap">
-                <p>Savings: </p>
-                <p className="b-total">${userData.priceData.discount}</p>
-              </div>
-              <div className="cart-total pair-wrap">
-                <p className="total">Cart Total: </p>
-                <p className="p-total b-total">${userData.priceData.total}</p>
-              </div>
-            </div>
-            <hr />
-            <div className="proceed-shipping">
-              <button onClick={this.handleProceed} className="btn-primary">Proceed to Shipping</button>
-            </div>
-        </div>
+        <CartSummary
+        isCart={true}
+        pcode={pcode}
+        usedCode={usedCode}
+        handlePromo={this.handlePromo}
+        handleChange={this.handleChange}
+        handleProceed={this.handleProceed}
+        userData={userData}
+        />
       </div>
     )
   }

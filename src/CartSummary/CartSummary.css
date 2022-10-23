@@ -1,0 +1,76 @@
+.cart-wrap {
+  max-width: 600px;
+  box-shadow: 3px 8px 14px rgba(33, 33, 33, 0.6);
+  overflow: hidden;
+  padding: 20px 18px;
+}
+
+.checkout-wrap {
+  position: relative;
+  background-color: white;
+  color: black;
+  max-width: 350px;
+  box-shadow: 3px 8px 14px rgba(33, 33, 33, 0.6);
+  padding: 0 8px;
+  margin-left: 30px;
+}
+
+.checkout-wrap h5 {
+  font-size: 16px;
+  float: right;
+  padding-right: 8px;
+  margin-top: 0;
+  padding-top: 3px;
+}
+.checkout-wrap p { font-size: 18px; }
+.checkout-wrap hr { width: 80%;}
+
+.promo-wrap p{ margin: 0;}
+.promo-wrap input { 
+  width: 80px;
+  height: 20px;
+}
+.promo-input {
+  font-size: 12px;
+  font-weight: 100;
+  color: gray;
+  border: 2px solid black;
+  margin-right: 1px;
+}
+button.promo-input  { 
+  width: 57px; 
+  height: 25px; 
+  padding: 0;
+  color: black;
+  background-color: transparent;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.total-wrap p { font-size: 12px;}
+
+.pair-wrap {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  margin: 0;
+  padding: 0;
+}
+p.total { font-size: 14px; font-weight: 500;}
+p.b-total { font-weight: 800; }
+p.p-total { 
+  color: #cc2c53; 
+  font-size: 18px;
+}
+button.btn-primary {
+  position: absolute;
+  width: 96%;
+  font-size: 20px;
+  padding: 7px;
+  background-color: #cc2c53;
+  color: white;
+  border: 1px solid #cc2c53;
+  bottom: 8px;
+  left: 5px;
+  cursor: pointer;
+}

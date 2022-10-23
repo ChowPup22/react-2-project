@@ -7,7 +7,6 @@ import { INIT_PASS, INIT_CREATE, INIT_SIGN, visible, icon } from '../constants';
 class SignIn extends React.Component {
   constructor(props) {
     super(props);
-    this.handleState();
     this.state = {
       formData: props.formData,
       error: {},

@@ -7,7 +7,6 @@ import { cellPhoneValidation, onlyTextValidation, streetAddressValidation, zipCo
 class ShippingInfo extends React.Component {
   constructor(props) {
     super(props);
-    this.handleState();
     this.state = {
       error: {},
       userData: {
