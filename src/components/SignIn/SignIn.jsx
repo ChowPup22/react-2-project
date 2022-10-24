@@ -251,6 +251,7 @@ class SignIn extends React.Component {
             onChange={this.handleInputData}
             autoComplete= 'off'
             name={item.name}
+            key={item.name}
             onBlur={this.handleBlur}
             errorM={
               (error

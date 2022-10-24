@@ -177,6 +177,7 @@ class PaymentInfo extends React.Component {
               autoComplete= 'off'
               maxLength={maxLength}
               name={item.name}
+              key={item.name}
               onBlur={this.handleBlur}
               cardType={cardType}
               isCard={item.name === 'card'}

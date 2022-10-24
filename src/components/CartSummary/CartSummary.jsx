@@ -67,7 +67,7 @@ class CartSummary extends React.Component {
               <div>
                 {items.map(item => {
                   return (
-                    <div className={styles.item_sum_wrap}>
+                    <div className={styles.item_sum_wrap} key={item.title}>
                       <img src={item.img} alt={item.alt} style={imgStyle} />
                       <p className={styles.item_sum_title}>{item.title}</p>
                       <p className={styles.quantity}>{item.quantity}</p>

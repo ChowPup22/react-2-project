@@ -118,6 +118,7 @@ class CustomerCart extends React.Component {
             alt={item.alt}
             category={item.category}
             title={item.title}
+            key={item.title}
             description={item.description}
             price={item.price}
             productTotal={item.productTotal}
