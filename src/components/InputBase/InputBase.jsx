@@ -1,14 +1,14 @@
 import React from "react";
-import './InputBase.css';
-import { CARD, CARDICON } from "../constants";
+import styles from './InputBase.module.css';
+import { CARD, CARDICON } from "../../Constants/Cards";
 
 
 const InputBase = ({ passData, errorM, header, isCard, cardType, ...props}) => (
   <label>
-    {header && <div className="header">{header}</div>}
-    {errorM ? <input style={{border: '2px solid red'}} className="input-root" {...props}/> :
-    <input className="input-root" {...props}/> }
-    {errorM && <div className="error">{errorM}</div>}
+    {header && <div className={styles.header}>{header}</div>}
+    {errorM ? <input style={{border: '2px solid red'}} className={styles.input_root} {...props}/> :
+    <input className={styles.input_root} {...props}/> }
+    {errorM && <div className={styles.error}>{errorM}</div>}
     {(!errorM || !errorM.cardError) && isCard && CARD.includes(cardType) && (
       <img
       style={{

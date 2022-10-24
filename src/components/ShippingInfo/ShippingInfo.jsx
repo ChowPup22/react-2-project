@@ -1,9 +1,9 @@
 import React from "react";
-import './ShippingInfo.css';
+import styles from './ShippingInfo.module.css';
 import InputBase from "../InputBase/InputBase";
-import { cellPhoneValidation, onlyTextValidation, streetAddressValidation, zipCodeValidation } from '../validations';
+import { cellPhoneValidation, onlyTextValidation, streetAddressValidation, zipCodeValidation } from '../../Constants/Validations';
 import CartSummary from "../CartSummary/CartSummary";
-import { INIT_SHIPPING_INPUT } from "../constants";
+import { INIT_SHIPPING_INPUT } from "../../Constants/States";
 
 class ShippingInfo extends React.Component {
   constructor(props) {
@@ -11,8 +11,6 @@ class ShippingInfo extends React.Component {
     this.state = {
       error: {},
       userData: this.props.userData,
-      itemSummary: [],
-      shippingSummary: {},
     }
   };
 
@@ -122,12 +120,6 @@ class ShippingInfo extends React.Component {
     return isError;
   };
 
-  handleShippingSummary = () => {
-    this.setState({
-      shippingSummary: this.state.userData.shippingData,
-    }, this.handleState('shippingSummary', this.state.shippingSummary))
-  }
-
   handleShipping = (e) => {
     const  { subtotal, discount } = this.state.userData.priceData;
 
@@ -169,10 +161,13 @@ class ShippingInfo extends React.Component {
     let errorCheck = this.checkErrorBeforeSave();
 
     if(!errorCheck) {
-      this.handleShippingSummary();
       this.handleState('userData', this.state.userData);
       this.handleState('userShipping', true);
     }
+  }
+
+  handleReturn = () => {
+    this.handleState('userCheckout', false)
   }
 
   render() {
@@ -184,8 +179,8 @@ class ShippingInfo extends React.Component {
 
     
     return (
-     <div className="shipping-page-wrap">
-        <div className="shipping-wrap">
+     <div className={styles.shipping_page_wrap}>
+        <div className={styles.shipping_wrap}>
           <form>
             {INIT_SHIPPING_INPUT.length ? INIT_SHIPPING_INPUT.map((item) => (
               // file deepcode ignore ReactMissingArrayKeys: <n/a>
@@ -207,9 +202,9 @@ class ShippingInfo extends React.Component {
               />
             )) : null}
           </form>
-          <div className='radial-wrap'>
+          <div className={styles.radial_wrap}>
             <label>
-              <input onChange={this.handleShipping} type="radio" name="radioResponse" id="freeShipping" defaultChecked/>
+              <input onChange={this.handleShipping} type="radio" name="radioResponse" id="freeShipping" />
               Free Shipping- <br/> (5-7 business days)
             </label>
             <label>
@@ -217,11 +212,11 @@ class ShippingInfo extends React.Component {
               Rush Shipping- <br/> (1-3 business days)
             </label>
           </div>
+          <input type="button" value="BACK TO CART" className={styles.btn_return} onClick={this.handleReturn} />
         </div>
         <CartSummary
         isShipping={true}
         userData={userData}
-        itemSummary={itemSummary}
         handleProceed={this.handleProceed}
         />
       </div>

@@ -1,7 +1,25 @@
 import React from "react";
-import './CartSummary.css';
+import styles from './CartSummary.module.css';
 
 class CartSummary extends React.Component {
+
+  handleItemSummary = (dataset) => {
+    let x = 0;
+    let items = [];
+    for(; x < dataset.length; x++) {
+      if (dataset[x].quantity > 0) {
+        let newItem = {
+          img: dataset[x].img,
+          alt: dataset[x].alt,
+          title: dataset[x].title,
+          quantity: dataset[x].quantity,
+          productTotal: dataset[x].productTotal,
+        }
+        items.push(newItem);
+      }
+    }
+    return items;
+  };
 
   render() {
     const {
@@ -14,7 +32,6 @@ class CartSummary extends React.Component {
       handlePromo,
       handleProceed,
       userData,
-      itemSummary,
     } = this.props;
 
     const imgStyle = {
@@ -32,54 +49,67 @@ class CartSummary extends React.Component {
       }
     }
 
+    const items = this.handleItemSummary(userData.itemData);
     return (
-      <div className="checkout-wrap">
+      <div className={styles.checkout_wrap}>
             <h5>SUMMARY</h5>
             <br />
             <hr />
             {isCart ? 
-            <div className="promo-wrap">
+            <div className={styles.promo_wrap}>
               <p>Do you have a Promo code?</p>
-              <input type="text" placeholder="CODE" value={pcode} className="promo-input" disabled={usedCode} onChange={handleChange}/>
-              <button className="promo-input" onClick={handlePromo}>APPLY</button>
+              <input type="text" placeholder="CODE" value={pcode} className={styles.promo_input} disabled={usedCode} onChange={handleChange}/>
+              <button className={styles.promo_input} onClick={handlePromo}>APPLY</button>
               <hr />
             </div>
             : null}
-            {isShipping && itemSummary.length ? 
-            <div className="item-sum-wrap">
-              <div className="item-wrap">
-                <img src={itemSummary[0].img} alt={itemSummary[0].alt} style={imgStyle} />
-                <p className="item-title">{itemSummary[0].title}</p>
-                <p className="item-total">{itemSummary[0].productTotal}</p>
+            {isShipping && items.length ? 
+              <div>
+                {items.map(item => {
+                  return (
+                    <div className={styles.item_sum_wrap}>
+                      <img src={item.img} alt={item.alt} style={imgStyle} />
+                      <p className={styles.item_sum_title}>{item.title}</p>
+                      <p className={styles.quantity}>{item.quantity}</p>
+                      <p className={styles.item_sum_total}>{item.productTotal}</p>
+                    </div>
+                  )
+                })}
+                <hr />
               </div>
-              <div className="item-wrap">
-                <img src={itemSummary[1].img} alt={itemSummary[1].alt} style={imgStyle} />
-                <p className="item-title">{itemSummary[1].title}</p>
-                <p className="item-total">{itemSummary[1].productTotal}</p>
-              </div>
-            </div>
             : null}
-            <div className="total-wrap">
-              <div className="subtotal pair-wrap">
+            {isPayment && userData.shippingData ? 
+              <div className={styles.shipping_sum_wrap}>
+                <h5>Shipping to:</h5>
+                <br />
+                <p>{userData.shippingData.addresseeName}</p>
+                <p>{userData.shippingData.streetAddress}</p>
+                <p>{userData.shippingData.city+', '+userData.shippingData.state+' '+ userData.shippingData.zipCode}</p>
+                <p>{userData.shippingData.cellPhone}</p>
+                <hr />
+              </div>
+            : null}
+            <div className={styles.total_wrap}>
+              <div className={`${styles.subtotal} ${styles.pair_wrap}`}>
                 <p>Cart Subtotal: </p>
-                <p className="b-total">${userData.priceData.subtotal}</p>
+                <p className={styles.b_total}>${userData.priceData.subtotal}</p>
               </div>
-              <div className="sH pair-wrap">
+              <div className={`${styles.sH} ${styles.pair_wrap}`}>
                 <p>Shipping Cost: </p>
-                <p className="b-total">{isCart ? '-' : '$'+userData.priceData.shipping}</p>
+                <p className={styles.b_total}>{isCart ? '-' : '$'+userData.priceData.shipping}</p>
               </div>
-              <div className="discount pair-wrap">
+              <div className={`${styles.discount} ${styles.pair_wrap}`}>
                 <p>Savings: </p>
-                <p className="b-total">${userData.priceData.discount}</p>
+                <p className={styles.b_total}>${userData.priceData.discount}</p>
               </div>
-              <div className="cart-total pair-wrap">
-                <p className="total">Cart Total: </p>
-                <p className="p-total b-total">${userData.priceData.total}</p>
+              <div className={`${styles.cart_total} ${styles.pair_wrap}`}>
+                <p className={styles.total}>Cart Total: </p>
+                <p className={`${styles.p_total} ${styles.b_total}`}>${userData.priceData.total}</p>
               </div>
             </div>
             <hr />
-            <div className="proceed-shipping">
-              <button onClick={handleProceed} className="btn-primary">{btn()}</button>
+            <div className={styles.proceed_shipping}>
+              <button onClick={handleProceed} className={styles.btn_primary}>{btn()}</button>
             </div>
         </div>
     )

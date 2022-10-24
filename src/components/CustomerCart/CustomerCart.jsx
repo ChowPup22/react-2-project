@@ -1,7 +1,7 @@
 import React from "react";
-import './CustomerCart.css';
+import styles from './CustomerCart.module.css';
 import ItemBase from "../ItemBase/ItemBase";
-import { CODES } from "../constants";
+import { CODES } from "../../Constants/States";
 import CartSummary from "../CartSummary/CartSummary";
 
 class CustomerCart extends React.Component {
@@ -11,7 +11,6 @@ class CustomerCart extends React.Component {
     userData: this.props.userData,
       pcode: '',
       usedCode: false,
-      itemSummary: [],
     }
   };
 
@@ -80,37 +79,18 @@ class CustomerCart extends React.Component {
     }
   };
 
-  handleItemSummary = (dataset) => {
-    let x = 0;
-    for(; x < dataset.length; x++) {
-      if (dataset[x].quantity > 0) {
-        console.log('here');
-        let newItem = {
-          img: dataset[x].img,
-          alt: dataset[x].alt,
-          title: dataset[x].title,
-          productTotal: dataset[x].productTotal,
-        }
-        console.log(newItem);
-        this.setState(prev => ({
-          itemSummary: [
-            ...prev.itemSummary,
-            newItem,
-          ]
-        }), this.handleState('itemSummary', this.state.itemSummary))
-      }
-    }
-  }
-
   handleProceed = () => {
     if (this.state.userData.priceData.total > 0) {
-      this.handleItemSummary(this.state.userData.itemData)
       this.handleState('userData', this.state.userData)
       this.handleState('userCheckout', true);
     } else {
       alert('You must make a selection to proceed!');
     }
   };
+
+  handleReturn = () => {
+    this.handleState('userSignedIn', false);
+  }
 
   render() {
     const {
@@ -120,10 +100,10 @@ class CustomerCart extends React.Component {
     } = this.state;
 
     return (
-      <div className="cart-page-wrap">
-        <div className="cart-wrap">
-          <div className="header-wrap">
-            <h5 className="product-header">Product</h5>
+      <div className={styles.cart_page_wrap}>
+        <div className={styles.cart_wrap}>
+          <div className={styles.header_wrap}>
+            <h5 className={styles.product_header}>Product</h5>
             <h5>Price</h5>
             <h5>Quantity</h5>
             <h5>Total</h5>
@@ -144,6 +124,7 @@ class CustomerCart extends React.Component {
             id={item.id}
             />
           )) : null}
+          <input type="button" value="BACK TO SIGN IN" className={styles.btn_return} onClick={this.handleReturn} />
         </div>
         <CartSummary
         isCart={true}

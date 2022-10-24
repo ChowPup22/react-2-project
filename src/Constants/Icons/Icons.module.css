@@ -1,0 +1,17 @@
+.fb_icon {
+  background-color: white;
+  color: #183254;
+  font-size: 35px;
+  position: absolute;
+  left: 18px;
+  top: 20px;
+  z-index: 5;
+  border-radius: 50%;
+  border: 2px solid #183254;
+  cursor: pointer;
+}
+
+.confirm_icon {
+  color: #cc2c53;
+  font-size: 150px;
+}

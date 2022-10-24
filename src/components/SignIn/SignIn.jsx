@@ -1,8 +1,9 @@
 import React from 'react';
-import './SignIn.css';
+import styles from './SignIn.module.css';
 import InputBase from '../InputBase/InputBase';
-import { emailValidation, onlyTextValidation, passwordValidation, zipCodeValidation } from '../validations';
-import { INIT_PASS, INIT_CREATE, INIT_SIGN, visible, icon } from '../constants';
+import { emailValidation, onlyTextValidation, passwordValidation, zipCodeValidation } from '../../Constants/Validations';
+import { INIT_PASS, INIT_CREATE, INIT_SIGN, } from '../../Constants/States';
+import { visible, icon } from '../../Constants/Icons/Icons';
 
 class SignIn extends React.Component {
   constructor(props) {
@@ -228,8 +229,8 @@ class SignIn extends React.Component {
     } = this.state;
 
     return (
-      <div className='sign-wrap'>
-        <div className='radial-wrap'>
+      <div className={styles.sign_wrap}>
+        <div className={styles.radial_wrap}>
           <label>
             <input onChange={this.handleSignUI} type="radio" name="radioResponse" id="signIn" />
             SIGN IN
@@ -260,19 +261,19 @@ class SignIn extends React.Component {
             }
           />
           )) : null}
-          <span className="pass-toggle" onClick={this.passVisibility}>{passData.passIcon}</span>
-          <div className="btn-wrapper">
-            <InputBase type="submit" value={button} className='main'/>
-            <div className="or-wrap">
-              <hr className='hr-left' />
+          <span className={styles.pass_toggle} onClick={this.passVisibility}>{passData.passIcon}</span>
+          <div className={styles.btn_wrapper}>
+            <InputBase type="submit" value={button} className={styles.main}/>
+            <div>
+              <hr />
               <span>or</span>
-              <hr className='hr-right' />
+              <hr />
             </div>
-            <div className="fb-wrap">
+            <div className={styles.fb_wrap}>
               <InputBase 
               type="submit" 
               value={` ${button} with Facebook`} 
-              className="fb main" />
+              className={`${styles.fb} ${styles.main}`} />
               <span>{icon}</span>
             </div>
           </div>

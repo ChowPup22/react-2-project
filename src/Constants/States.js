@@ -1,16 +1,7 @@
 import { IMAGES } from "../assets/ProductImages";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFacebook } from '@fortawesome/free-brands-svg-icons';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { hidden } from "./Icons/Icons";
+import { INIT_CARD } from "./Cards";
 
-import VISA_ICON from '../assets/visa.png';
-import AMERICAN_EXPRESS_ICON from '../assets/amex.png';
-import DISCOVER_ICON from '../assets/discover.png';
-import MASTER_ICON from '../assets/masterCard.png';
-
-const hidden = <FontAwesomeIcon icon={faEye} className="pass-icon" id="pass-icon"/>;
-export const visible = <FontAwesomeIcon icon={faEyeSlash} className="pass-icon" id="pass-icon"/>;
-export const icon = <FontAwesomeIcon icon={faFacebook} className="fb-icon"/>;
 export const CODES = ['JSX15', 'RJS15', '15OFF', 'SAV15', 'CCS15'];
 
 export const INIT_FORM = {
@@ -56,12 +47,6 @@ export const INIT_SHIPPING_DATA = {
   shippingMethod: '',
 };
 
-export const INIT_CARD = {
-  card: '',
-  cardHolder: '',
-  expiry: '',
-  securityCode: '',
-};
 
 export const INIT_PASS = {
   passVisible: false,
@@ -93,66 +78,22 @@ export const INIT_SHIPPING_INPUT = [
   {header: 'Cell Phone Number', label: '', name: 'cellPhone', type: 'text', error: 'cellPhoneError'},
 ]
 
+export const INIT_USER_DATA = {
+  formData: INIT_FORM,
+  itemData: INIT_DATA,
+  priceData: INIT_PRICE_DATA,
+  shippingData: INIT_SHIPPING_DATA,
+  paymentData: INIT_CARD,
+  itemSummary: [],
+}
 
-export const INIT_CARD_INPUT = [
-  { header: 'Card Number', label: '', name: 'card', type: 'text', error: 'cardError'},
-  { header: 'Cardholder\'s Name', label: '', name: 'cardHolder', type: 'text', error: 'cardHolderError'},
-  { header: 'Expiry Date ', label: '(MM/YY)', name: 'expiry', type: 'text', error: 'expiryError'},
-  { header: 'Security Code', label: '', name: 'securityCode', type: 'text', error: 'securityCodeError'},
-]
-
-export const OTHERCARDS = [
-  /[1-9]/,
-  /\d/,
-  /\d/,
-  /\d/,
-  ' ',
-  /\d/,
-  /\d/,
-  /\d/,
-  /\d/,
-  ' ',
-  /\d/,
-  /\d/,
-  /\d/,
-  /\d/,
-  ' ',
-  /\d/,
-  /\d/,
-  /\d/,
-  /\d/,
-]
-
-export const AMERICAN_EXPRESS = [
-  /[1-9]/,
-  /\d/,
-  /\d/,
-  /\d/,
-  ' ',
-  /\d/,
-  /\d/,
-  /\d/,
-  /\d/,
-  /\d/,
-  /\d/,
-  ' ',
-  /\d/,
-  /\d/,
-  /\d/,
-  /\d/,
-  /\d/,
-]
-
-export const CARD = [
-  'VISA',
-  'MASTERCARD',
-  'AMERICAN_EXPRESS',
-  'DISCOVER'
-]
-
-export const CARDICON = {
-  VISA: VISA_ICON,
-  AMERICAN_EXPRESS: AMERICAN_EXPRESS_ICON,
-  MASTERCARD: MASTER_ICON,
-  DISCOVER: DISCOVER_ICON,
+export const INIT_STATE = {
+  userSignedIn: false,
+  userCheckout: false,
+  userShipping: false,
+  userPayment: false,
+  userConfirmedPay: false,
+  users: [TEST_USER],
+  currentUser: {},
+  userData: INIT_USER_DATA,
 }

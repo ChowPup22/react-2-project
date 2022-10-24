@@ -1,9 +1,9 @@
 import React from "react";
+import styles from './PaymentInfo.module.css';
 import CartSummary from "../CartSummary/CartSummary";
-import { INIT_CARD_INPUT, OTHERCARDS } from "../constants";
 import InputBase from "../InputBase/InputBase";
-import { cardExpireValidation, cardNumberValidation, onlyTextValidation, securityCodeValidation } from "../validations";
-import './PaymentInfo.css';
+import { OTHERCARDS, INIT_CARD_INPUT } from "../../Constants/Cards";
+import { cardExpireValidation, cardNumberValidation, onlyTextValidation, securityCodeValidation } from "../../Constants/Validations";
 
 class PaymentInfo extends React.Component {
   constructor(props) {
@@ -13,10 +13,8 @@ class PaymentInfo extends React.Component {
       error: {},
       maxLength: OTHERCARDS.length,
       cardType: null,
-
     }
   }
-
 
   handleState = (name, value) => {
     this.props.handleState(name, value);
@@ -151,6 +149,10 @@ class PaymentInfo extends React.Component {
     }
   }
 
+  handleReturn = () => {
+    this.handleState('userShipping', false);
+  }
+
   render() {
 
     const {
@@ -162,8 +164,8 @@ class PaymentInfo extends React.Component {
 
 
     return (
-      <div className="payment-page-wrap">
-        <div className="payment-wrap">
+      <div className={styles.payment_page_wrap}>
+        <div className={styles.payment_wrap}>
           <form >
             {INIT_CARD_INPUT.length ? INIT_CARD_INPUT.map((item) => (
               <InputBase
@@ -187,6 +189,7 @@ class PaymentInfo extends React.Component {
               }
             />
             )) : null}
+            <input type="button" value="BACK TO SHIPPING" className={styles.btn_return} onClick={this.handleReturn} />
           </form>
         </div>
         <CartSummary

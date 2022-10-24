@@ -1,4 +1,4 @@
-.checkout-wrap {
+.checkout_wrap {
   position: relative;
   background-color: white;
   color: black;
@@ -8,29 +8,29 @@
   margin-left: 30px;
 }
 
-.checkout-wrap h5 {
+.checkout_wrap h5 {
   font-size: 16px;
   float: right;
   padding-right: 8px;
   margin-top: 0;
   padding-top: 3px;
 }
-.checkout-wrap p { font-size: 18px; }
-.checkout-wrap hr { width: 80%;}
+.checkout_wrap p { font-size: 18px; }
+.checkout_wrap hr { width: 80%;}
 
-.promo-wrap p{ margin: 0;}
-.promo-wrap input { 
+.promo_wrap p{ margin: 0;}
+.promo_wrap input { 
   width: 80px;
   height: 20px;
 }
-.promo-input {
+.promo_input {
   font-size: 12px;
   font-weight: 100;
   color: gray;
   border: 2px solid black;
   margin-right: 1px;
 }
-button.promo-input  { 
+button.promo_input  { 
   width: 57px; 
   height: 25px; 
   padding: 0;
@@ -40,9 +40,22 @@ button.promo-input  {
   cursor: pointer;
 }
 
-.total-wrap p { font-size: 12px;}
+.item_sum_wrap {
+  width: 200px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
 
-.pair-wrap {
+.item_sum_wrap p { font-size: 16px; }
+
+.shipping_sum_wrap h5 { float: left; margin-bottom: 0; }
+.shipping_sum_wrap p { font-size: 10px; }
+
+.total_wrap p { font-size: 12px;}
+
+.pair_wrap {
   display: flex;
   justify-content: space-between;
   flex-direction: row;
@@ -50,12 +63,12 @@ button.promo-input  {
   padding: 0;
 }
 p.total { font-size: 14px; font-weight: 500;}
-p.b-total { font-weight: 800; }
-p.p-total { 
+p.b_total { font-weight: 800; }
+p.p_total { 
   color: #cc2c53; 
   font-size: 18px;
 }
-button.btn-primary {
+button.btn_primary {
   position: absolute;
   width: 96%;
   font-size: 20px;

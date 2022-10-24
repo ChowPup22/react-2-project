@@ -1,4 +1,4 @@
-.cart-page-wrap {
+.cart_page_wrap {
   background-color: white;
   padding: 28px 24px;
   margin: 18px auto;
@@ -7,7 +7,7 @@
   cursor: default;
 }
 
-.header-wrap {
+.header_wrap {
   display: flex;
   flex-direction: row;
   color: black;
@@ -17,9 +17,19 @@
   justify-content: space-around;
 }
 
-.cart-wrap {
+.cart_wrap {
   max-width: 600px;
   box-shadow: 3px 8px 14px rgba(33, 33, 33, 0.6);
   overflow: hidden;
   padding: 20px 18px;
+}
+
+.btn_return {
+  background-color: transparent;
+  border: 2px solid black;
+  color: black;
+  font-size: 18px;
+  font-weight: 700;
+  padding: 3px 5px;
+  margin-top: 20px;
 }
