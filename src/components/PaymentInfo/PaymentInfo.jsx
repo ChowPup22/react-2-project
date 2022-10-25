@@ -4,6 +4,7 @@ import CartSummary from "../CartSummary/CartSummary";
 import InputBase from "../InputBase/InputBase";
 import { OTHERCARDS, INIT_CARD_INPUT } from "../../Constants/Cards";
 import { cardExpireValidation, cardNumberValidation, onlyTextValidation, securityCodeValidation } from "../../Constants/Validations";
+import { CODES } from "../../Constants/States";
 
 class PaymentInfo extends React.Component {
   constructor(props) {
@@ -13,6 +14,8 @@ class PaymentInfo extends React.Component {
       error: {},
       maxLength: OTHERCARDS.length,
       cardType: null,
+      pcode: '',
+      usedCode: false,
     }
   }
 
@@ -80,6 +83,35 @@ class PaymentInfo extends React.Component {
   }
 
   handleBlur = ({ target: {name, value}}) => this.handleValidations(name, value);
+
+  handleChange = ({target: { value } }) => {
+    this.setState({ pcode: value})
+  };
+
+  handlePromo = () => {
+    const { userData, pcode } = this.state;
+    if (CODES[pcode]) {
+      const discount = (userData.priceData.subtotal * CODES[pcode]).toFixed(2);
+      const newTotal = (userData.priceData.subtotal - discount) + userData.priceData.shipping;
+
+      this.setState(prev => ({
+        userData: {
+          ...prev.userData,
+          priceData: {
+            ...prev.userData.priceData,
+            discount: discount,
+            total: newTotal.toFixed(2),
+          },
+        },
+        usedCode: true,
+      }))
+    } else if(pcode === '') {
+      alert('You must enter a code to continue!')
+    } else {
+      this.setState({ pcode: ''});
+      return alert(`${pcode} is not a valid code!`);
+    }
+  };
 
   handleInputData = ({ target: {name, value}}) => {
 
@@ -159,7 +191,9 @@ class PaymentInfo extends React.Component {
       userData,
       error,
       cardType,
-      maxLength
+      maxLength,
+      usedCode,
+      pcode,
     } = this.state;
 
 
@@ -196,6 +230,10 @@ class PaymentInfo extends React.Component {
         <CartSummary
         handleProceed={this.handleProceed}
         isPayment={true}
+        pcode={pcode}
+        usedCode={usedCode}
+        handlePromo={this.handlePromo}
+        handleChange={this.handleChange}
         userData={userData}
         />
       </div>

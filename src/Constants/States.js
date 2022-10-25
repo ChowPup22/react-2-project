@@ -2,7 +2,12 @@ import { IMAGES } from "../assets/ProductImages";
 import { hidden } from "./Icons/Icons";
 import { INIT_CARD } from "./Cards";
 
-export const CODES = ['JSX15', 'RJS15', '15OFF', 'SAV15', 'CCS15'];
+export const CODES = {
+  SAV15: 0.15,
+  SAV20: 0.20,
+  SAV50: 0.50,
+  JSX25: 0.25,
+};
 
 export const INIT_FORM = {
   email: '',
@@ -14,7 +19,7 @@ export const INIT_FORM = {
 };
 
 export const TEST_USER = {
-  email: 'andrew@domain.com',
+  email: 'user@domain.com',
   pass: 'pass@1234',
   passConfirm: 'pass@1234',
   firstName: 'Andrew',
@@ -23,6 +28,13 @@ export const TEST_USER = {
 };
 
 export const INIT_DATA = [
+  {img: IMAGES.product1, alt: 'code snippet', category: 'FORMS', title: 'InputBase', description: 'The only component you will need for all your basic form needs!', id: '0', price: 24.99, quantity: 0, productTotal: 0},
+  {img: IMAGES.product2, alt: 'code snippet', category: 'UI CONTROL', title: 'Theme Toggle', description: 'Keep the UI synced with user theme with this unique component!', id: '1', price: 27.49, quantity: 0, productTotal: 0},
+  {img: IMAGES.product3, alt: 'code snippet', category: 'DATASETS', title: 'Data Manager', description: 'Handle user input data and keep everything organized!', id: '2', price: 32.97, quantity: 0, productTotal: 0},
+  {img: IMAGES.product4, alt: 'code snippet', category: 'FORMS', title: 'Submit Handler', description: 'Prevent default form submissions and handle data your way!', id: '3', price: 19.98, quantity: 0, productTotal: 0},
+];
+
+export const INIT_DATA_RELOAD = [
   {img: IMAGES.product1, alt: 'code snippet', category: 'FORMS', title: 'InputBase', description: 'The only component you will need for all your basic form needs!', id: '0', price: 24.99, quantity: 0, productTotal: 0},
   {img: IMAGES.product2, alt: 'code snippet', category: 'UI CONTROL', title: 'Theme Toggle', description: 'Keep the UI synced with user theme with this unique component!', id: '1', price: 27.49, quantity: 0, productTotal: 0},
   {img: IMAGES.product3, alt: 'code snippet', category: 'DATASETS', title: 'Data Manager', description: 'Handle user input data and keep everything organized!', id: '2', price: 32.97, quantity: 0, productTotal: 0},
@@ -94,6 +106,6 @@ export const INIT_STATE = {
   userPayment: false,
   userConfirmedPay: false,
   users: [TEST_USER],
-  currentUser: {},
+  currentUser: '',
   userData: INIT_USER_DATA,
 }

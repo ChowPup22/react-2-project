@@ -1,23 +1,23 @@
 import React from "react";
-import './ItemBase.css'
-import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
+import styles from './ItemBase.module.css'
+import { remove } from "../../Constants/Icons/Icons";
 
 const ItemBase = ({ ...props}) => (
-  <div className="item-wrap">
-    {/* <span>{faCircleXmark}</span> */}
+  <div className={styles.item_wrap} id={props.id}>
+    <span className={styles.remove_wrap} key={props.id} id={props.id} onClick={props.onClick}>{remove}</span>
     <img height='100px' width='75px' src={props.img} alt={props.alt} />
-    <div className="product-wrap">
-      <div className="product-description">
-        <span>{props.category}</span>
-        <h5>{props.title}</h5>
-        <p>{props.description}</p>
+    <div className={styles.product_wrap}>
+      <div className={styles.product_description}>
+        <span className={styles.product_span}>{props.category}</span>
+        <h5 className={styles.product_h5}>{props.title}</h5>
+        <p className={styles.product_p}>{props.description}</p>
       </div>
     </div>
-    <div className="product-price">
+    <div className={styles.product_price}>
       <h4>{`$${props.price.toFixed(2)}`}</h4>
     </div>
-    <div className="product-quantity">
-      <select onChange={props.onChange} name="product-quantity" price={props.price} id={props.id}>
+    <div>
+      <select className={styles.product_quantity} onChange={props.onChange} name="product-quantity" price={props.price} id={props.id}>
         <option value="0">0</option>
         <option value="1">1</option>
         <option value="2">2</option>
@@ -31,7 +31,7 @@ const ItemBase = ({ ...props}) => (
         <option value="10">10</option>
       </select>
     </div>
-    <div className="product-total">
+    <div className={styles.product_total}>
       <h4>{`$${props.productTotal.toFixed(2)}`}</h4>
     </div>
   </div>

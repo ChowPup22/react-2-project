@@ -2,6 +2,7 @@ import React from "react";
 import { INIT_USER_DATA } from "../../Constants/States";
 import { confirm } from "../../Constants/Icons/Icons";
 import styles from './Confirmation.module.css';
+import CartSummary from "../CartSummary/CartSummary";
 
 class Confirmation extends React.Component {
   constructor(props) {
@@ -55,7 +56,7 @@ class Confirmation extends React.Component {
           <br />
           <br />
           <div className={styles.icon_wrap}>{confirm}</div>
-          <p>Thank you {currentUser.email} for your purchase!</p>
+          <p>Thank you <b>{currentUser}</b> for your purchase!</p>
           <h5>Your confirmation code is: </h5>
           <span style={{fontSize: '10px'}}>CLICK TO COPY</span>
           <div className={styles.confirm_code} onClick={this.handleCopyCode}>
@@ -64,7 +65,10 @@ class Confirmation extends React.Component {
           <input type="button" value="BACK TO HOME" className={styles.btn_return} onClick={this.handleReturn} />
         </div>
         <div className={styles.confirm_summary}>
-
+          <CartSummary 
+          isConfirm={true}
+          userData={userData}
+          />
         </div>
       </div>
     )

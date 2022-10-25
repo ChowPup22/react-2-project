@@ -1,10 +1,12 @@
 import React from 'react';
+import styles from './CodeCommerce.module.css'
 import SignIn from '../SignIn/SignIn';
 import CustomerCart from '../CustomerCart/CustomerCart';
 import ShippingInfo from '../ShippingInfo/ShippingInfo';
 import { INIT_STATE } from '../../Constants/States';
 import PaymentInfo from '../PaymentInfo/PaymentInfo';
 import Confirmation from '../Confirmation/Confirmation';
+import ProgressBar from '../ProgressBar/ProgressBar';
 
 class CodeCommerce extends React.Component {
   constructor() {
@@ -31,7 +33,13 @@ class CodeCommerce extends React.Component {
       currentUser,
     } = this.state;
     return(
-      <div>
+      <div className={styles.home_wrap}>
+        <ProgressBar
+        cartIsDone={userSignedIn}
+        shipIsDone={userCheckout}
+        payIsDone={userShipping}
+        payIsConfirm={userPayment}
+         />
         {!userSignedIn ? <SignIn handleState={this.handleStateData} users={users} userData={userData}/> : null}
         {userSignedIn && !userCheckout ? <CustomerCart handleState={this.handleStateData} userData={userData} /> : null}
         {userCheckout && !userShipping ? <ShippingInfo handleState={this.handleStateData} userData={userData} /> : null}

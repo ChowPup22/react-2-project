@@ -1,16 +1,14 @@
 import React from "react";
 import styles from './CustomerCart.module.css';
 import ItemBase from "../ItemBase/ItemBase";
-import { CODES } from "../../Constants/States";
 import CartSummary from "../CartSummary/CartSummary";
 
 class CustomerCart extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-    userData: this.props.userData,
-      pcode: '',
-      usedCode: false,
+      userData: this.props.userData,
+      removed: [],
     }
   };
 
@@ -20,7 +18,7 @@ class CustomerCart extends React.Component {
 
   calcProductTotal = (e) => {
     e.preventDefault();
-    const { itemData, priceData } = this.state.userData;
+    const { itemData } = this.state.userData;
     let num = e.target.value;
     let id = e.target.id;
     let price = itemData[id].price;
@@ -42,41 +40,36 @@ class CustomerCart extends React.Component {
         priceData: {
           ...prev.userData.priceData,
           subtotal: newSubtotal.toFixed(2),
-          total: (newSubtotal - priceData.discount).toFixed(2),
+          total: newSubtotal.toFixed(2),
         },
         itemData: prev.userData.itemData.map(obj => (
           obj.id === id ? Object.assign(obj, { quantity: num, productTotal: newProductTotal }) : obj
         ))
       }
-    }))
+    }));
   };
 
   handleChange = ({target: { value } }) => {
     this.setState({ pcode: value})
   };
 
-  handlePromo = () => {
-    const { userData, pcode } = this.state;
-    if (CODES.includes(pcode)) {
-      const newTotal = userData.priceData.subtotal - 15;
-
-      this.setState(prev => ({
-        userData: {
-          ...prev.userData,
-          priceData: {
-            ...prev.userData.priceData,
-            discount: '15.00',
-            total: newTotal.toFixed(2),
-          },
-        },
-        usedCode: true,
-      }))
-    } else if(pcode === '') {
-      alert('You must enter a code to continue!')
-    } else {
-      this.setState({ pcode: ''});
-      return alert(`${pcode} is not a valid code!`);
-    }
+  handleRemove = (e) => {
+    const { itemData } = this.state.userData;
+    const { removed } = this.state;
+    itemData.forEach(obj => {
+      let x = 0;
+      x++;
+      if(e.target.id === obj.id) {
+        removed.push(obj);
+        itemData.splice(x, 1);
+        this.setState(prev => ({
+          userData: {
+            ...prev.userData,
+            itemData,
+          }
+        }));
+      }
+    });
   };
 
   handleProceed = () => {
@@ -88,15 +81,27 @@ class CustomerCart extends React.Component {
     }
   };
 
-  handleReturn = () => {
-    this.handleState('userSignedIn', false);
+  handleReload = () => {
+    const { removed } = this.state;
+    this.setState(prev => ({
+      userData: {
+        ...prev.userData,
+        itemData: [
+          ...prev.userData.itemData,
+          removed,
+        ]
+      }
+    }))
   }
+
+  handleReturn = () => {
+    this.handleReload();
+    this.handleState('userSignedIn', false);
+  };
 
   render() {
     const {
       userData,
-      usedCode,
-      pcode,
     } = this.state;
 
     return (
@@ -112,6 +117,7 @@ class CustomerCart extends React.Component {
           {userData.itemData.length ? userData.itemData.map((item) => (
             // file deepcode ignore ReactMissingArrayKeys: <n/a>
             <ItemBase 
+            onClick={this.handleRemove}
             onChange={this.calcProductTotal}
             total={this.calcTotal}
             img={item.img}
@@ -129,9 +135,6 @@ class CustomerCart extends React.Component {
         </div>
         <CartSummary
         isCart={true}
-        pcode={pcode}
-        usedCode={usedCode}
-        handlePromo={this.handlePromo}
         handleChange={this.handleChange}
         handleProceed={this.handleProceed}
         userData={userData}

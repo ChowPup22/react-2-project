@@ -1,6 +1,6 @@
 .shipping_page_wrap {
   background-color: white;
-  padding: 28px 24px;
+  padding: 50px 24px;
   margin: 18px auto;
   display: inline-flex;
   justify-content: space-between;
@@ -35,4 +35,5 @@
   font-size: 18px;
   font-weight: 700;
   padding: 3px 5px;
+  cursor: pointer;
 }

@@ -148,7 +148,8 @@ class SignIn extends React.Component {
 
   handleBlur = ({ target: {name, value}}) => this.handleValidations(name, value);
 
-  checkErrorBeforeSave = () => {
+  checkErrorBeforeSave = (method) => {
+    const { users } = this.props;
     const { userData, error } = this.state;
     let errorValue = {};
     let isError = false;
@@ -159,6 +160,13 @@ class SignIn extends React.Component {
       } else if (error[`${val}Error`]) {
         errorValue = {...errorValue, [`${val}Error`] : error[`${val}Error`]};
         isError = true;
+      } else if(method === 'create') {
+        users.forEach(user => {
+          if(user.email === userData.formData.email) {
+            errorValue = {...errorValue, emailError: 'Email already exists, sign in or use another email'}
+            isError = true;
+          }
+        })
       }
     });
     this.setState({ error: errorValue });
@@ -169,7 +177,7 @@ class SignIn extends React.Component {
     const { formData } = this.state.userData;
     e.preventDefault();
 
-    const errorCheck = this.checkErrorBeforeSave();
+    const errorCheck = this.checkErrorBeforeSave('create');
     if (!errorCheck) {
       this.setState(prev => ({
         users: {
@@ -190,7 +198,7 @@ class SignIn extends React.Component {
     const { formData } = this.state.userData;
     const { users } = this.props;
     e.preventDefault();
-    const errorCheck = this.checkErrorBeforeSave();
+    const errorCheck = this.checkErrorBeforeSave('sign');
     if (!errorCheck) {
       let y = 0;
       users.forEach(user => {

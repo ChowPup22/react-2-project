@@ -13,5 +13,24 @@
 
 .confirm_icon {
   color: #cc2c53;
-  font-size: 150px;
+  font-size: 100px;
+  margin: 0 auto;
+}
+
+.remove_icon {
+  font-size: 25px;
+  color: rgb(148, 148, 148);
+  pointer-events: none;
+}
+
+.cart_icon, .truck_icon, .card_icon, .check_icon {
+  font-size: 18px;
+  z-index: 1;
+  background: transparent;
+  background-clip: text;
+  padding-left: -5px;
+  padding-right: -5px;
+  position: absolute;
+  top: 25%;
+  left: 25%;
 }

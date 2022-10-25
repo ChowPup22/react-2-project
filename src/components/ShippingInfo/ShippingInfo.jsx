@@ -5,6 +5,7 @@ import { cellPhoneValidation, onlyTextValidation, streetAddressValidation, zipCo
 import CartSummary from "../CartSummary/CartSummary";
 import { INIT_SHIPPING_INPUT } from "../../Constants/States";
 
+
 class ShippingInfo extends React.Component {
   constructor(props) {
     super(props);
@@ -174,7 +175,6 @@ class ShippingInfo extends React.Component {
     const {
       userData,
       error,
-      itemSummary,
     } = this.state;
 
     

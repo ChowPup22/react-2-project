@@ -26,6 +26,7 @@ class CartSummary extends React.Component {
       isCart,
       isShipping,
       isPayment,
+      isConfirm,
       pcode,
       usedCode,
       handleChange,
@@ -49,21 +50,20 @@ class CartSummary extends React.Component {
       }
     }
 
+    const handleCardTrim = () => {
+      const card = userData.paymentData.card;
+      const trim = card.slice(15, 19)
+
+      return trim;
+    }
+
     const items = this.handleItemSummary(userData.itemData);
     return (
       <div className={styles.checkout_wrap}>
             <h5>SUMMARY</h5>
             <br />
             <hr />
-            {isCart ? 
-            <div className={styles.promo_wrap}>
-              <p>Do you have a Promo code?</p>
-              <input type="text" placeholder="CODE" value={pcode} className={styles.promo_input} disabled={usedCode} onChange={handleChange}/>
-              <button className={styles.promo_input} onClick={handlePromo}>APPLY</button>
-              <hr />
-            </div>
-            : null}
-            {isShipping && items.length ? 
+            {(isShipping || isConfirm) && items.length ? 
               <div>
                 {items.map(item => {
                   return (
@@ -71,14 +71,23 @@ class CartSummary extends React.Component {
                       <img src={item.img} alt={item.alt} style={imgStyle} />
                       <p className={styles.item_sum_title}>{item.title}</p>
                       <p className={styles.quantity}>{item.quantity}</p>
-                      <p className={styles.item_sum_total}>{item.productTotal}</p>
+                      <p className={styles.item_sum_total}>{(item.productTotal).toFixed(2)}</p>
                     </div>
                   )
                 })}
                 <hr />
               </div>
             : null}
-            {isPayment && userData.shippingData ? 
+            {isPayment && userData.shippingData ?
+            <div className={styles.promo_wrap}>
+              <p>Do you have a Promo code?</p>
+              <input title="Try out SAV15, SAV20, SAV50 or JSX25" type="text" placeholder="CODE" value={pcode} className={styles.promo_input} disabled={usedCode} onChange={handleChange}/>
+              <button className={styles.promo_input} onClick={handlePromo}>APPLY</button>
+              <hr />
+            </div>
+            : null}
+            {(isPayment || isConfirm) && userData.shippingData ? 
+              <section>
               <div className={styles.shipping_sum_wrap}>
                 <h5>Shipping to:</h5>
                 <br />
@@ -88,6 +97,7 @@ class CartSummary extends React.Component {
                 <p>{userData.shippingData.cellPhone}</p>
                 <hr />
               </div>
+              </section>
             : null}
             <div className={styles.total_wrap}>
               <div className={`${styles.subtotal} ${styles.pair_wrap}`}>
@@ -107,10 +117,17 @@ class CartSummary extends React.Component {
                 <p className={`${styles.p_total} ${styles.b_total}`}>${userData.priceData.total}</p>
               </div>
             </div>
-            <hr />
+            <hr className={styles.hr_bottom} />
+            {isCart || isShipping || isPayment ? 
             <div className={styles.proceed_shipping}>
               <button onClick={handleProceed} className={styles.btn_primary}>{btn()}</button>
             </div>
+            : null}
+            {isConfirm ? 
+              <div>
+                <span className={styles.pay_confirm_span}>Payment confirmed with card ending in {handleCardTrim()}</span>
+              </div>
+            : null }
         </div>
     )
   }
