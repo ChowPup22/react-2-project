@@ -37,3 +37,11 @@
   padding: 3px 5px;
   cursor: pointer;
 }
+
+.error {
+  color: red;
+  font-size: 14px;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}

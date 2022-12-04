@@ -78,7 +78,7 @@ class CartSummary extends React.Component {
                 <hr />
               </div>
             : null}
-            {isPayment && userData.shippingData ?
+            {isCart && userData.shippingData ?
             <div className={styles.promo_wrap}>
               <p>Do you have a Promo code?</p>
               <input title="Try out SAV15, SAV20, SAV50 or JSX25" type="text" placeholder="CODE" value={pcode} className={styles.promo_input} disabled={usedCode} onChange={handleChange}/>

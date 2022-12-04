@@ -25,3 +25,13 @@ label {
   top: 5px;
   right: 5px;
 }
+
+.select_root {
+  border: 2px solid rgb(162, 159, 159);
+  border-radius: 5px;
+  padding: 10px;
+  line-height: 1.2;
+  font-size: 14px;
+  width: 150px;
+  text-align: center;
+}

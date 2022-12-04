@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-export const onlyTextValidation = (value) => {
+const onlyTextValidation = (value) => {
   if (value) {
     if (/^[a-zA-Z\s]*$/i.test(value)) {
       return undefined;
@@ -12,7 +12,7 @@ export const onlyTextValidation = (value) => {
   }
 };
 
-export const streetAddressValidation = (value) => {
+const streetAddressValidation = (value) => {
   if (value) {
     if (/^[#.0-9a-zA-Z\s,-]+$/i.test(value)) {
       return undefined;
@@ -24,7 +24,7 @@ export const streetAddressValidation = (value) => {
   }
 };
 
-export const zipCodeValidation = (value) => {
+const zipCodeValidation = (value) => {
   if (value) {
     if (/^\d{5}([ -]\d{4})?$/i.test(value)) {
       return undefined;
@@ -36,7 +36,7 @@ export const zipCodeValidation = (value) => {
   }
 };
 
-export const cellPhoneValidation = (value) =>{
+const cellPhoneValidation = (value) =>{
   if (value) {
     if (/^[0-9\s-]{10,12}$/i.test(value)) {
       return undefined;
@@ -48,7 +48,7 @@ export const cellPhoneValidation = (value) =>{
   }
 }
 
-export const emailValidation = (value) => {
+const emailValidation = (value) => {
   if (value) {
     if (/\S+@\S+\.\S+/i.test(value)) {
       return undefined;
@@ -60,7 +60,7 @@ export const emailValidation = (value) => {
   }
 };
 
-export const passwordValidation = (value) => {
+const passwordValidation = (value) => {
   if (value) {
     if (/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$/i.test(value)) {
       return undefined;
@@ -72,7 +72,7 @@ export const passwordValidation = (value) => {
   }
 }
 
-export const cardNumberValidation = (cardNumber) => {
+const cardNumberValidation = (cardNumber) => {
   const regexPattern = {
     MASTERCARD: /^5[1-5][0-9]{1,}|^2[2-7][0-9]{1,}$/,
     VISA: /^4[0-9]{2,}$/,
@@ -92,7 +92,7 @@ export const cardNumberValidation = (cardNumber) => {
   return 'Enter a valid Card';
 }
 
-export const cardExpireValidation = (value) => {
+const cardExpireValidation = (value) => {
   if (value) {
     if (/^(0[1-9]|1[0-2])\/[0-9]{2}$/i.test(value.trim())) {
       let today = new Date();
@@ -110,5 +110,23 @@ export const cardExpireValidation = (value) => {
   }
 };
 
-export const securityCodeValidation = (min, value) =>
+const securityCodeValidation = (min, value) =>
   (value && value.length < min) ? 'Must be 3 characters or more' : undefined;
+
+export const validations = {
+  addresseeName: (value) => onlyTextValidation(value),
+  streetAddress: (value) => streetAddressValidation(value),
+  city: (value) => onlyTextValidation(value),
+  state: (value) => onlyTextValidation(value),
+  zipCode: (value) => zipCodeValidation(value),
+  cellPhone: (value) => cellPhoneValidation(value),
+  country: (value) => onlyTextValidation(value),
+  email: (value) => emailValidation(value),
+  pass: (value) => passwordValidation(value),
+  card: (value) => cardNumberValidation(value),
+  cardHolder: (value) => onlyTextValidation(value),
+  expiry: (value) => cardExpireValidation(value),
+  securityCode: (value) => securityCodeValidation(3, value),
+  firstName: (value) => onlyTextValidation(value),
+  lastName: (value) => onlyTextValidation(value),
+}

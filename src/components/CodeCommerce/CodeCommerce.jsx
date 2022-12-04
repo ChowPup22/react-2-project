@@ -40,9 +40,9 @@ class CodeCommerce extends React.Component {
         payIsDone={userShipping}
         payIsConfirm={userPayment}
          />
-        {!userSignedIn ? <SignIn handleState={this.handleStateData} users={users} userData={userData}/> : null}
+        {userSignedIn ? <SignIn handleState={this.handleStateData} users={users} userData={userData}/> : null}
         {userSignedIn && !userCheckout ? <CustomerCart handleState={this.handleStateData} userData={userData} /> : null}
-        {userCheckout && !userShipping ? <ShippingInfo handleState={this.handleStateData} userData={userData} /> : null}
+        {!userCheckout && !userShipping ? <ShippingInfo handleState={this.handleStateData} userData={userData} /> : null}
         {userShipping && !userPayment ? <PaymentInfo handleState={this.handleStateData} userData={userData} /> : null}
         {userPayment && !userConfirmedPay ? <Confirmation handleState={this.handleStateData} userData={userData} currentUser={currentUser} /> : null}
       </div>

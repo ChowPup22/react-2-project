@@ -3,8 +3,7 @@ import styles from './PaymentInfo.module.css';
 import CartSummary from "../CartSummary/CartSummary";
 import InputBase from "../InputBase/InputBase";
 import { OTHERCARDS, INIT_CARD_INPUT } from "../../Constants/Cards";
-import { cardExpireValidation, cardNumberValidation, onlyTextValidation, securityCodeValidation } from "../../Constants/Validations";
-import { CODES } from "../../Constants/States";
+import { validations } from "../../Constants/Validations";
 
 class PaymentInfo extends React.Component {
   constructor(props) {
@@ -14,8 +13,6 @@ class PaymentInfo extends React.Component {
       error: {},
       maxLength: OTHERCARDS.length,
       cardType: null,
-      pcode: '',
-      usedCode: false,
     }
   }
 
@@ -38,80 +35,16 @@ class PaymentInfo extends React.Component {
   }
 
   handleValidations = (type, value) => {
-    let errorText;
-    switch(type) {
-      case 'card':
-        errorText = cardNumberValidation(value);
-        this.setState((prevState) => ({
-          cardType: this.findCardType(value),
-          error: {
-            ...prevState.error,
-            cardError: errorText,
-          }
-        }));
-        break;
-      case 'cardHolder':
-        errorText = onlyTextValidation(value);
-        this.setState((prevState) => ({
-          error: {
-            ...prevState.error,
-            cardHolderError: errorText,
-          }
-        }));
-        break;
-      case 'expiry':
-        errorText = cardExpireValidation(value);
-        this.setState((prevState) => ({
-          error: {
-            ...prevState.error,
-            expiryError: errorText,
-          }
-        }));
-        break;
-      case 'securityCode':
-        errorText = securityCodeValidation(3, value);
-        this.setState((prevState) => ({
-          error: {
-            ...prevState.error,
-            securityCodeError: errorText,
-          }
-        }));
-        break;
-      default:
-        break;
-    }
+    const errorText = validations[type](value);
+    this.setState((prevState) => ({
+      error: {
+        ...prevState.error,
+        [`${type}Error`]: errorText,
+      }
+    }));
   }
 
   handleBlur = ({ target: {name, value}}) => this.handleValidations(name, value);
-
-  handleChange = ({target: { value } }) => {
-    this.setState({ pcode: value})
-  };
-
-  handlePromo = () => {
-    const { userData, pcode } = this.state;
-    if (CODES[pcode]) {
-      const discount = (userData.priceData.subtotal * CODES[pcode]).toFixed(2);
-      const newTotal = (userData.priceData.subtotal - discount) + userData.priceData.shipping;
-
-      this.setState(prev => ({
-        userData: {
-          ...prev.userData,
-          priceData: {
-            ...prev.userData.priceData,
-            discount: discount,
-            total: newTotal.toFixed(2),
-          },
-        },
-        usedCode: true,
-      }))
-    } else if(pcode === '') {
-      alert('You must enter a code to continue!')
-    } else {
-      this.setState({ pcode: ''});
-      return alert(`${pcode} is not a valid code!`);
-    }
-  };
 
   handleInputData = ({ target: {name, value}}) => {
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './SignIn.module.css';
 import InputBase from '../InputBase/InputBase';
-import { emailValidation, onlyTextValidation, passwordValidation, zipCodeValidation } from '../../Constants/Validations';
+import {  validations } from '../../Constants/Validations';
 import { INIT_PASS, INIT_CREATE, INIT_SIGN, } from '../../Constants/States';
 import { visible, icon } from '../../Constants/Icons/Icons';
 
@@ -75,75 +75,20 @@ class SignIn extends React.Component {
   };
 
   handleValidations = (type, value) => {
-    const { pass, passConfirm } = this.state.userData.formData;
-    let errorText;
-    switch(type) {
-      case 'email':
-        errorText = emailValidation(value);
-        this.setState((prevState) => ({
-          error: {
-            ...prevState.error,
-            emailError: errorText,
-          }
-        }));
-        break;
-      case 'pass':
-        errorText = passwordValidation(value);
-        this.setState((prevState) => ({
-          error: {
-            ...prevState.error,
-            passError: errorText,
-          }
-        }));
-        break;
-      case 'passConfirm':
-        errorText = passwordValidation(value);
-        if (pass === passConfirm) {
-          this.setState((prevState) => ({
-            error: {
-              ...prevState.error,
-              passConfirmError: errorText,
-            }
-          }));
-        } else if (pass !== passConfirm){
-          this.setState((prevState) => ({
-            error: {
-              ...prevState.error,
-              passConfirmError: 'Passwords must match to continue!',
-            }
-          }));
-        }
-        break;
-        case 'firstName':
-        errorText = onlyTextValidation(value);
-        this.setState((prevState) => ({
-          error: {
-            ...prevState.error,
-            firstNameError: errorText,
-          }
-        }));
-        break;
-        case 'lastName':
-        errorText = onlyTextValidation(value);
-        this.setState((prevState) => ({
-          error: {
-            ...prevState.error,
-            lastNameError: errorText,
-          }
-        }));
-        break;
-        case 'zipCode':
-        errorText = zipCodeValidation(value);
-        this.setState((prevState) => ({
-          error: {
-            ...prevState.error,
-            zipCodeError: errorText,
-          }
-        }));
-        break;
-      default:
-        break;
+    const { pass } = this.state.userData.formData;
+
+    const validationSign = {
+      ...validations,
+      passConfirm: (value) => (pass === value) ? null : 'Passwords do not match',
     }
+
+    const errorText = validationSign[type](value);
+    this.setState((prevState) => ({
+      error: {
+        ...prevState.error,
+        [`${type}Error`]: errorText,
+      }
+    }));
   };
 
   handleBlur = ({ target: {name, value}}) => this.handleValidations(name, value);

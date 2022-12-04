@@ -1,6 +1,7 @@
 import React from "react";
 import styles from './CustomerCart.module.css';
 import ItemBase from "../ItemBase/ItemBase";
+import { CODES } from "../../Constants/States";
 import CartSummary from "../CartSummary/CartSummary";
 
 class CustomerCart extends React.Component {
@@ -9,6 +10,8 @@ class CustomerCart extends React.Component {
     this.state = {
       userData: this.props.userData,
       removed: [],
+      pcode: '',
+      usedCode: false,
     }
   };
 
@@ -20,14 +23,15 @@ class CustomerCart extends React.Component {
     e.preventDefault();
     const { itemData } = this.state.userData;
     let num = e.target.value;
-    let id = e.target.id;
-    let price = itemData[id].price;
+    let targetId = e.target.id;
+    let itemIndex = itemData.findIndex((item) => item.id === targetId);
+    let price = itemData[itemIndex].price;
     let newProductTotal = (num * price);
     let newSubtotal = 0;
     let x = 0;
     
     for(; x < itemData.length; x++) {
-      if (id === itemData[x].id) {
+      if (targetId === itemData[x].id) {
         newSubtotal = newSubtotal + newProductTotal;
       } else {
         newSubtotal = newSubtotal + itemData[x].productTotal
@@ -43,7 +47,7 @@ class CustomerCart extends React.Component {
           total: newSubtotal.toFixed(2),
         },
         itemData: prev.userData.itemData.map(obj => (
-          obj.id === id ? Object.assign(obj, { quantity: num, productTotal: newProductTotal }) : obj
+          obj.id === targetId ? Object.assign(obj, { quantity: num, productTotal: newProductTotal }) : obj
         ))
       }
     }));
@@ -55,21 +59,51 @@ class CustomerCart extends React.Component {
 
   handleRemove = (e) => {
     const { itemData } = this.state.userData;
-    const { removed } = this.state;
+    
     itemData.forEach(obj => {
-      let x = 0;
-      x++;
       if(e.target.id === obj.id) {
-        removed.push(obj);
-        itemData.splice(x, 1);
+        let index = itemData.indexOf(obj);
+        let itemTotal = itemData[index].productTotal;
+        itemData.splice(index, 1);
         this.setState(prev => ({
           userData: {
             ...prev.userData,
             itemData,
+            priceData: {
+              ...prev.userData.priceData,
+              subtotal: (prev.userData.priceData.subtotal - itemTotal).toFixed(2),
+              total: (prev.userData.priceData.total - itemTotal).toFixed(2),
+            },
           }
         }));
       }
     });
+    console.log(itemData);
+  };
+
+  handlePromo = () => {
+    const { userData, pcode } = this.state;
+    if (CODES[pcode]) {
+      const discount = (userData.priceData.subtotal * CODES[pcode]).toFixed(2);
+      const newTotal = (userData.priceData.subtotal - discount).toFixed(2);
+
+      this.setState(prev => ({
+        userData: {
+          ...prev.userData,
+          priceData: {
+            ...prev.userData.priceData,
+            discount: discount,
+            total: newTotal,
+          },
+        },
+        usedCode: true,
+      }))
+    } else if(pcode === '') {
+      alert('You must enter a code to continue!')
+    } else {
+      this.setState({ pcode: ''});
+      return alert(`${pcode} is not a valid code!`);
+    }
   };
 
   handleProceed = () => {
@@ -137,6 +171,7 @@ class CustomerCart extends React.Component {
         isCart={true}
         handleChange={this.handleChange}
         handleProceed={this.handleProceed}
+        handlePromo={this.handlePromo}
         userData={userData}
         />
       </div>

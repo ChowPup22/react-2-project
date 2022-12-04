@@ -1,7 +1,8 @@
 import React from "react";
+import { Country, State, City }  from 'country-state-city';
 import styles from './ShippingInfo.module.css';
 import InputBase from "../InputBase/InputBase";
-import { cellPhoneValidation, onlyTextValidation, streetAddressValidation, zipCodeValidation } from '../../Constants/Validations';
+import { validations } from '../../Constants/Validations';
 import CartSummary from "../CartSummary/CartSummary";
 import { INIT_SHIPPING_INPUT } from "../../Constants/States";
 
@@ -12,12 +13,31 @@ class ShippingInfo extends React.Component {
     this.state = {
       error: {},
       userData: this.props.userData,
+      countryOptions: [{name: 'Select Country', id: ''}, {name: 'United States', id: 'US'}, {name: 'Canada', id: 'CA'}, {name: 'Mexico', id: 'MX'}],
+      countrySelected: '',
+      stateOptions: [],
+      stateSelected: '',
+      cityOptions: [],
+      citySelected: '',
     }
   };
 
   handleState = (name, value) => {
     this.props.handleState(name, value);
   };
+
+  handleSelect = (name, value) => {
+    const { userData, countryOptions } = this.state;
+    userData.shippingData[name] = value;
+    this.setState({ userData });
+    if(name === 'country') {
+      const country = countryOptions.find((item) => item.name === value);
+      console.log(country);
+      this.setState({countrySelected: country.id});
+      const stateOptions = State.getStatesOfCountry(country.id);
+      this.setState({stateOptions});
+    }
+  }
 
   handleInputData = ({ target: {name, value}}) => {
     this.setState((prevState) => ({
@@ -32,73 +52,30 @@ class ShippingInfo extends React.Component {
   };
 
   handleValidations = (type, value) => {
-    let errorText; 
-    switch(type) {
-      case 'addresseeName':
-        errorText = onlyTextValidation(value);
-        this.setState(prev => ({
+    if(type === 'shippingMethod') {
+      if (value) {
+        this.setState((prevState) => ({
           error: {
-            ...prev.error,
-            addresseeNameError: errorText,
+            ...prevState.error,
+            [`${type}Error`]: undefined,
+          }
+        }))
+      } else {
+        this.setState((prevState) => ({
+          error: {
+            ...prevState.error,
+            [`${type}Error`]: 'Please select an option',
           }
         }));
-        break;
-      case 'streetAddress':
-        errorText = streetAddressValidation(value);
-        this.setState(prev => ({
-          error: {
-            ...prev.error,
-            streetAddressError: errorText,
-          }
-        }));
-        break;
-      case 'country':
-        errorText = onlyTextValidation(value);
-        this.setState(prev => ({
-          error: {
-            ...prev.error,
-            countryError: errorText,
-          }
-        }));
-        break;
-      case 'state':
-        errorText = onlyTextValidation(value);
-        this.setState(prev => ({
-          error: {
-            ...prev.error,
-            stateError: errorText,
-          }
-        }));
-        break;
-      case 'city':
-        errorText = onlyTextValidation(value);
-        this.setState(prev => ({
-          error: {
-            ...prev.error,
-            cityError: errorText,
-          }
-        }));
-        break;
-      case 'zipCode':
-        errorText = zipCodeValidation(value);
-        this.setState(prev => ({
-          error: {
-            ...prev.error,
-            zipCodeError: errorText,
-          }
-        }));
-        break;
-      case 'cellPhone':
-        errorText = cellPhoneValidation(value);
-        this.setState(prev => ({
-          error: {
-            ...prev.error,
-            cellPhoneError: errorText,
-          }
-        }));
-        break;
-      default:
-        break;
+      }
+    } else {
+      const errorText = validations[type](value);
+      this.setState((prevState) => ({
+        error: {
+          ...prevState.error,
+          [`${type}Error`]: errorText,
+        }
+      }));
     }
   };
 
@@ -131,14 +108,14 @@ class ShippingInfo extends React.Component {
           priceData: {
             ...prev.userData.priceData,
             shipping: 0,
-            total: subtotal - discount,
+            total: (subtotal - discount).toFixed(2),
           },
           shippingData: {
             ...prev.userData.shippingData,
             shippingMethod: 'Free',
           }
         }
-      }))
+      }), this.handleValidations('shippingMethod', true));
     } else if (e.target.id === 'rushShipping') {
       this.setState(prev => ({
         userData: {
@@ -153,7 +130,7 @@ class ShippingInfo extends React.Component {
             shippingMethod: 'Rush',
           }
         }
-      }))
+      }), this.handleValidations('shippingMethod', true));
     }
   }
 
@@ -175,6 +152,9 @@ class ShippingInfo extends React.Component {
     const {
       userData,
       error,
+      countryOptions,
+      stateOptions,
+      cityOptions,
     } = this.state;
 
     
@@ -193,6 +173,11 @@ class ShippingInfo extends React.Component {
               name={item.name}
               key={item.name}
               onBlur={this.handleBlur}
+              select={item.type === 'select'}
+              onSelect={this.handleSelect}
+              optionscountry={item.name === 'country' ? countryOptions : null}
+              optionsstate={item.name === 'state' ? stateOptions : null}
+              optionscity={item.name === 'city' ? null : null}
               errorM={
                 (error
                 && error[item.error]
@@ -204,12 +189,13 @@ class ShippingInfo extends React.Component {
             )) : null}
           </form>
           <div className={styles.radial_wrap}>
+            {error && error.radioResponseError && <div className={styles.error}>{error.radioResponseError}</div>}
             <label>
-              <input onChange={this.handleShipping} type="radio" name="radioResponse" id="freeShipping" />
+              <input onChange={this.handleShipping} type="radio" name="shippingMethod" id="freeShipping" />
               Free Shipping- <br/> (5-7 business days)
             </label>
             <label>
-              <input onChange={this.handleShipping} type="radio" name="radioResponse" id="rushShipping" />
+              <input onChange={this.handleShipping} type="radio" name="shippingMethod" id="rushShipping" />
               Rush Shipping- <br/> (1-3 business days)
             </label>
           </div>
