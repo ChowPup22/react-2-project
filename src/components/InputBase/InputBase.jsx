@@ -22,9 +22,15 @@ const InputBase = ({ passData, errorM, header, isCard, cardType, select, ...prop
       alt="card"
       />
     )}
-    {select && <select name={props.name} className={styles.select_root} onSelect={props.handleSelect} {...props}>
+    {select && <select name={props.name} className={styles.select_root} onChange={props.onSelect} {...props}>
       {props.name === 'country' ? props.optionscountry.map((option) => (
         <option key={option.id} value={option.name}>{option.name}</option>
+      )) : null}
+      {props.name === 'state' ? props.optionsstate.map((option) => (
+        <option key={option.id} value={option.name}>{option.name}</option>
+      )) : null}
+      {props.name === 'city' ? props.optionscity.map((option) => (
+        <option key={option.country + option.id + option.name} value={option.name}>{option.name}</option>
       )) : null}
       </select> }
   </label>

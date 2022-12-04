@@ -1,11 +1,10 @@
 import React from "react";
-import { Country, State, City }  from 'country-state-city';
+import { State, City }  from 'country-state-city';
 import styles from './ShippingInfo.module.css';
 import InputBase from "../InputBase/InputBase";
 import { validations } from '../../Constants/Validations';
 import CartSummary from "../CartSummary/CartSummary";
 import { INIT_SHIPPING_INPUT } from "../../Constants/States";
-
 
 class ShippingInfo extends React.Component {
   constructor(props) {
@@ -26,16 +25,29 @@ class ShippingInfo extends React.Component {
     this.props.handleState(name, value);
   };
 
-  handleSelect = (name, value) => {
-    const { userData, countryOptions } = this.state;
-    userData.shippingData[name] = value;
-    this.setState({ userData });
+  handleSelect = ({ target: {name, value}}) => {
+    const { userData, countryOptions, stateOptions, cityOptions } = this.state;
     if(name === 'country') {
       const country = countryOptions.find((item) => item.name === value);
-      console.log(country);
-      this.setState({countrySelected: country.id});
-      const stateOptions = State.getStatesOfCountry(country.id);
+      userData.shippingData[name] = country.name;
+      this.setState({ userData });
+      this.setState({countrySelected: country.name});
+      const states = State.getStatesOfCountry(country.id).map((item) => ({name: item.name, id: item.isoCode, country: item.countryCode}));
+      const stateOptions = [{name: 'Select State', id: ''}, ...states];
       this.setState({stateOptions});
+    } else if(name === 'state') {
+      const state = stateOptions.find((item) => item.name === value);
+      userData.shippingData[name] = state.name;
+      this.setState({ userData });
+      this.setState({stateSelected: state.id});
+      const cities = City.getCitiesOfState(state.country, state.id).map((item) => ({name: item.name, id: item.stateCode, country: item.countryCode}));
+      const cityOptions = [{name: 'Select City', id: ''}, ...cities];
+      this.setState({cityOptions});
+    } else if(name === 'city') {
+      const city = cityOptions.find((item) => item.name === value);
+      userData.shippingData[name] = city.name;
+      this.setState({ userData });
+      this.setState({citySelected: city.name});
     }
   }
 
@@ -168,16 +180,15 @@ class ShippingInfo extends React.Component {
               header={item.header}
               placeholder={item.label}
               value={userData.shippingData && userData.shippingData[item.name]}
-              onChange={this.handleInputData}
+              onChange={item.type === 'select' ? this.handleSelect : this.handleInputData}
               autoComplete= 'off'
               name={item.name}
               key={item.name}
               onBlur={this.handleBlur}
               select={item.type === 'select'}
-              onSelect={this.handleSelect}
               optionscountry={item.name === 'country' ? countryOptions : null}
               optionsstate={item.name === 'state' ? stateOptions : null}
-              optionscity={item.name === 'city' ? null : null}
+              optionscity={item.name === 'city' ? cityOptions : null}
               errorM={
                 (error
                 && error[item.error]

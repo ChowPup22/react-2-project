@@ -84,8 +84,8 @@ export const INIT_SHIPPING_INPUT = [
   {header: 'Full Name', label: '', name: 'addresseeName', type: 'text', error: 'addresseeNameError'},
   {header: 'Street Address', label: '', name: 'streetAddress', type: 'text', error: 'streetAddressError'},
   {header: 'Country', label: '', name: 'country', type: 'select', error: 'countryError', id:'country'},
-  // {header: 'City', label: '', name: 'city', type: 'select', error: 'cityError', id:'city'},
   {header: 'State', label: '', name: 'state', type: 'select', error: 'stateError', id:'state'},
+  {header: 'City', label: '', name: 'city', type: 'select', error: 'cityError', id:'city'},
   {header: 'Zip Code', label: '', name: 'zipCode', type: '', error: 'zipCodeError'},
   {header: 'Cell Phone Number', label: '', name: 'cellPhone', type: 'text', error: 'cellPhoneError'},
 ]

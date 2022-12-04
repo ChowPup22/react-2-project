@@ -78,7 +78,6 @@ class CustomerCart extends React.Component {
         }));
       }
     });
-    console.log(itemData);
   };
 
   handlePromo = () => {
