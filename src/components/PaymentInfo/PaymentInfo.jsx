@@ -41,7 +41,8 @@ class PaymentInfo extends React.Component {
         ...prevState.error,
         [`${type}Error`]: errorText,
       }
-    }));
+    }), type === 'card' ? () => { const cardType = this.findCardType(value) 
+      this.setState({ cardType }) } : null);
   }
 
   handleBlur = ({ target: {name, value}}) => this.handleValidations(name, value);
@@ -111,10 +112,12 @@ class PaymentInfo extends React.Component {
     if (!errorCheck) {
       this.handleState('userData', userData)
       this.handleState('userPayment', true)
+      this.handleState('step', 'confirmation')
     }
   }
 
   handleReturn = () => {
+    this.handleState('step', 'shipping');
     this.handleState('userShipping', false);
   }
 

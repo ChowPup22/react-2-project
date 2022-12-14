@@ -108,6 +108,7 @@ class CustomerCart extends React.Component {
   handleProceed = () => {
     if (this.state.userData.priceData.total > 0) {
       this.handleState('userData', this.state.userData)
+      this.handleState('step', 'shipping');
       this.handleState('userCheckout', true);
     } else {
       alert('You must make a selection to proceed!');
@@ -129,6 +130,7 @@ class CustomerCart extends React.Component {
 
   handleReturn = () => {
     this.handleReload();
+    this.handleState('step', 'signIn');
     this.handleState('userSignedIn', false);
   };
 

@@ -135,7 +135,7 @@ class SignIn extends React.Component {
       // file deepcode ignore ReactNextState: <required for project>
       this.setState({
         userData: this.props.userData,
-      }, this.handleState('userSignedIn', true));
+      }, this.handleState('step', 'cart'), this.handleState('userSignedIn', true));
     }
   };
 
@@ -149,6 +149,7 @@ class SignIn extends React.Component {
       users.forEach(user => {
         if( user.email === formData.email && user.pass === formData.pass) {
           this.handleState('currentUser', user.email);
+          this.handleState('step', 'cart');
           this.handleState('userSignedIn', true);
         } else if (user.email === formData.email && user.pass !== formData.pass) {
           this.setState((prevState) => ({

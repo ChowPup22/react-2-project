@@ -104,7 +104,6 @@ export const INIT_STATE = {
   userCheckout: false,
   userShipping: false,
   userPayment: false,
-  userConfirmedPay: false,
   users: [TEST_USER],
   currentUser: '',
   userData: INIT_USER_DATA,

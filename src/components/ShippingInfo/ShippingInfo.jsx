@@ -152,12 +152,15 @@ class ShippingInfo extends React.Component {
 
     if(!errorCheck) {
       this.handleState('userData', this.state.userData);
+      this.handleState('step', 'payment');
       this.handleState('userShipping', true);
     }
   }
 
   handleReturn = () => {
-    this.handleState('userCheckout', false)
+    this.handleState('step', 'cart')
+    this.handleState('userCheckout', false);
+
   }
 
   render() {

@@ -11,7 +11,10 @@ import ProgressBar from '../ProgressBar/ProgressBar';
 class CodeCommerce extends React.Component {
   constructor() {
     super();
-    this.state = INIT_STATE;
+    this.state = {
+      ...INIT_STATE,
+      step: 'signIn',
+    };
   };
 
   handleStateData = (name, value) => (
@@ -27,11 +30,20 @@ class CodeCommerce extends React.Component {
       userCheckout,
       userShipping,
       userPayment,
-      userConfirmedPay,
+      step,
       userData,
       users,
       currentUser,
     } = this.state;
+
+    const steps = {
+      'signIn': <SignIn handleState={this.handleStateData} users={users} userData={userData}/>,
+      'cart': <CustomerCart handleState={this.handleStateData} userData={userData} />,
+      'shipping': <ShippingInfo handleState={this.handleStateData} userData={userData} />,
+      'payment': <PaymentInfo handleState={this.handleStateData} userData={userData} />,
+      'confirmation': <Confirmation handleState={this.handleStateData} userData={userData} currentUser={currentUser} />,
+    }
+
     return(
       <div className={styles.home_wrap}>
         <ProgressBar
@@ -40,11 +52,9 @@ class CodeCommerce extends React.Component {
         payIsDone={userShipping}
         payIsConfirm={userPayment}
          />
-        {userSignedIn ? <SignIn handleState={this.handleStateData} users={users} userData={userData}/> : null}
-        {userSignedIn && !userCheckout ? <CustomerCart handleState={this.handleStateData} userData={userData} /> : null}
-        {!userCheckout && !userShipping ? <ShippingInfo handleState={this.handleStateData} userData={userData} /> : null}
-        {userShipping && !userPayment ? <PaymentInfo handleState={this.handleStateData} userData={userData} /> : null}
-        {userPayment && !userConfirmedPay ? <Confirmation handleState={this.handleStateData} userData={userData} currentUser={currentUser} /> : null}
+        
+        {steps[step]}
+
       </div>
     )
   }

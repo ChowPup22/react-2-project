@@ -36,11 +36,11 @@ class Confirmation extends React.Component {
   }
 
   handleReturn = () => {
+    this.handleState('step', 'signIn')
     this.handleState('userSignedIn', false);
     this.handleState('userCheckout', false);
     this.handleState('userShipping', false);
     this.handleState('userPayment', false);
-    this.handleState('userConfirmedPay', false);
     this.handleState('currentUser', {});
     this.handleState('userData', INIT_USER_DATA);
   }
